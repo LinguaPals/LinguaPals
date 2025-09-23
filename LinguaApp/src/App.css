@@ -1,19 +1,37 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  
+
+html, body, #root {
+  --main-color: #36454F;
+  --top-bar-color: rgb(166,192,94);
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
 }
 
 .content {
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column; /* stack logo + cards vertically */
+  align-items: center;    /* center children horizontally */
+  margin-top: 80px;       /* pushes below top bar */
+}
+
+body {
+  background: var(--main-color);
+  width: 100%;
   text-align: center;
 }
+
+
+
+
 .logo {
   top: 60;
   margin: 10px;
   border: 0px;
-  padding: 15px;  
+  padding: 15px; 
+  color: var(--top-bar-color);
+  text-align: center;
   
 }
 
@@ -26,12 +44,13 @@
   width: 100%;
   height: 60px;
   border: solid black;
+  background-color: var(--top-bar-color);
 }
 
 
 .top-bar-img {
-  width:50px;
-  height:50px;
+  width:45px;
+  height:45px;
   padding:5px;
   border-radius: 50%;
   object-fit: cover;
@@ -40,14 +59,14 @@
 .dashboard-cards {
   display: flex;
   gap: 100px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;     /* vertically aligns card content */
+  justify-content: center; /* horizontally centers the cards */
+  margin-top: 40px;  
 }
 
 .card {
   border: 4px solid black;
-  border-radius: 15%;
+  border-radius: 5%;
   padding: 16px;
   width: 250px;
   height: 500px;

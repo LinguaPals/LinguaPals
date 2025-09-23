@@ -11,9 +11,9 @@ function App() {
         {/*This is where the top bar should go*/}
         <TopBar />
       </div>
+    
       <div className="content">
         <h1 className ="logo">Lingua Pals</h1>
-        <br />
         <div className="dashboard-cards">
           <Card title='Card 1' /> {/* Card 1 will be past video history */}
   
@@ -22,9 +22,7 @@ function App() {
           <Card title='Card 3' /> {/* Card 3 will have stats / tbd */}
         </div>
       </div>
-      <p>
-        
-      </p>
+      
     </>
   )
 }
@@ -35,7 +33,7 @@ const TopBar = ({ user_auth }) => {
   return (
     <div className="top-bar">
       <img src={CompanyLogo} className="top-bar-img" />
-      <p>Yo lets fucking go Penjamin pals</p> 
+      <p>Whats good</p> 
       <img src={ProfileImg} alt='Profile' className="top-bar-img" />
    
     </div>
