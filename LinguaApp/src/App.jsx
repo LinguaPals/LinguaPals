@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const user = 1; {/*this is where the google sign in auth state will be */}
+  const user = 0; {/*this is where the google sign in auth state will be */}
   return (
     <section>
       {user ? <Dashboard/>:<SignIn/>}
@@ -16,6 +16,21 @@ function App() {
 function SignIn() {
   {/* Once we get mongo set up put in the sign in with google feature here, as well as user authentication */}
   {/* Then change the user var so the App() switches states to Dashboard */}
+  const signInWithGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider);
+};
+
+  return (
+    <>
+      <div>
+          <h1 className="logo">LinguaPals</h1>
+          <button onClick={signInWithGoogle}>
+            Sign in With Google
+          </button>
+      </div>
+    </>
+  )
 }
 
 function Dashboard() {
@@ -27,7 +42,7 @@ function Dashboard() {
       </div>
     
       <div className="content">
-        <h1 className ="logo">Lingua Pals</h1> {/*this will prolly get switched out for custom image */}
+        <h1 className ="logo">LinguaPals</h1> {/*this will prolly get switched out for custom image */}
         <div className="dashboard-cards">
           <Card title='Card 1' /> {/* Card 1 will be past video history */}
   
