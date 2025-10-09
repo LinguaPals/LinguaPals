@@ -10,3 +10,5 @@ const TopBar = ({ user_auth }) => {
         </div>
     )
 }
+
+export default TopBar;

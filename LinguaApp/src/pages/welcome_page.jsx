@@ -2,9 +2,11 @@
 function WelcomePage() {
     /* Once we get mongo set up put in the sign in with google feature here, as well as user authentication */
     /* Then change the user var so the App() switches states to Dashboard */
-    const signInWithGoogle = () => {
+    const signInWithGoogle = async () => {
         const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider);
+        const result = await auth.signInWithPopup(provider);
+
+        setUser(result.user);
     };
 
     return (
@@ -29,3 +31,4 @@ function WelcomePage() {
         </>
     )
 }
+export default WelcomePage;

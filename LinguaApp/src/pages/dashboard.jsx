@@ -1,11 +1,10 @@
-import TopBar from './components/top_bar.jsx'
-import Card from './components/card.jsx'
+import TopBar from '../components/top_bar.jsx'
+import Card from '../components/card.jsx'
 
 function Dashboard() {
     return (
         <>
             <div>
-                {/*This is where the top bar should go*/}
                 <TopBar />
             </div>
 
@@ -23,4 +22,5 @@ function Dashboard() {
         </>
     )
 }
+export default Dashboard;
 

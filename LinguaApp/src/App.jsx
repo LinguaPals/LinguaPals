@@ -4,11 +4,17 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Dashboard from './pages/dashboard.jsx'
 import WelcomePage from './pages/welcome_page.jsx';
+
+
 function App() {
-    const user = 0; /*this is where the google sign in auth state will be */
+    const [user, setUser] = useState(null); 
     return (
         <section>
-            {user ? <Dashboard /> : <SignIn />}
+            {user ? (
+            <Dashboard user={user} />
+            ) : (
+            <WelcomePage setUser={setUser}/>
+            )}
         </section>
 
     )
