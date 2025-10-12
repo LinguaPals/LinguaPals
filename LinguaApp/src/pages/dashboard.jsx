@@ -1,11 +1,11 @@
 import TopBar from '../components/top_bar.jsx'
 import Card from '../components/card.jsx'
 
-function Dashboard() {
+function Dashboard({ user, setUser }) {
     return (
         <>
             <div>
-                <TopBar />
+                <TopBar user_auth={user} setUser={setUser}/>
             </div>
 
             <div className="content">

@@ -44,6 +44,23 @@ body {
   background-color: var(--top-bar-color);
 }
 
+.dropdown-menu {
+  text-align: center;
+  list-style-type: none;
+  padding: 5px;
+  margin: 0px;
+  height: 70px;
+  width: 100px;
+  border: 1px solid white;
+  background-color: grey;
+  border-style:groove;
+}
+
+.dropdown-menu li:hover {
+  color: #cceeff;
+  cursor:pointer;
+}
+
 
 .top-bar-img {
   width:45px;
@@ -87,7 +104,7 @@ body {
   align-items: center;
 
 }
-.loginButtons button{
+.loginButtons input{
   align-content: center;
   align-items: stretch;
   background-color: rgb(227, 232, 229);
@@ -99,11 +116,16 @@ body {
   margin: 1px;
   border-radius: 3px;
   border-color: black;
-
 }
 
-
-#email {
-  
+.sign-in button {
+  background-color: rgb(71, 108, 237);
+  border: 1px solid white;
+  color: white;
+  height: 60px;
+  font-size: 18px;
+  width: 350px;
+  text-align: center;
+  margin-bottom: 3px;
 }
 
