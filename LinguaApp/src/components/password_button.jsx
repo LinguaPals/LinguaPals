@@ -11,10 +11,10 @@ function PasswordInput() {
         <div style={{ textAlign: "center" }}>
         <input
             type="password"
-            placeholder="Enter your password"
+            placeholder="Password"
             value={password}
             onChange={handleChange}
-            style={{ padding: "3px", fontSize: "13px", width: "350px"}}
+           
         />
         </div>
     );

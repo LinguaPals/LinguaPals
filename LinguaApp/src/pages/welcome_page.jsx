@@ -22,31 +22,32 @@ function WelcomePage ({ setUser }){
     return (
         <>
             <div className="welcomePage">
-                <h1 className="logo">LinguaPals</h1>
-                
-                <div className="loginButtons">
-                    <EmailInput />
-                    <PasswordInput />
-                    <SignIn />
-                    <button onClick={signInWithGoogle}
-                    style={{
-                        background: "none",
-                        border: "none",
-                        padding: 0
-                    }}>
-                        <img src={ GoogleIcon }
-                        alt="Sign in with Google"
-                        className="google-icon"/>
-                    </button>
-                    {/*debugging button to switch to dash */}
-                    <button
-                        onClick={handleDebugLogin}>
-                        Go to dashboard
-                    </button>
+                <div className="main-box">
+                    <h1 className="sign-in-logo">LinguaPals</h1>
+                    <hr />
+                    <div className="loginButtons">
+                        <EmailInput />
+                        <PasswordInput />
+                        <SignIn />
+                        <button onClick={signInWithGoogle}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            padding: 0
+                        }}>
+                            <img src={ GoogleIcon }
+                            alt="Sign in with Google"
+                            className="google-icon"/>
+                        </button>
+                        {/*debugging button to switch to dash */}
+                        <button
+                            onClick={handleDebugLogin}>
+                            Go to dashboard
+                        </button>
+                    </div>
                 </div>
 
             </div>
-            <p>The right way to learn a language</p>
         </>
     )
 }

@@ -11,10 +11,10 @@ function EmailInput() {
         <div style={{ textAlign: "center" }}>
         <input
             type="email"
-            placeholder="Enter your email"
+            placeholder="Email"
             value={email}
             onChange={handleChange}
-            style={{ padding: "3px", fontSize: "13px", width: "350px"}}
+          
         />
         
         
