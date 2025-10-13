@@ -135,14 +135,14 @@ body {
   background-color: rgb(71, 108, 237);
   border: 1px solid white;
   color: white;
-  height: 60px;
+  height: 50px;
   font-size: 18px;
-  width: 360px;
+  width: 205px;
   text-align: center;
   margin: 5px;
 }
 .google-icon {
-  align-self: left;
-  
+  padding: 5px;
+  width: 200px;
 }
 

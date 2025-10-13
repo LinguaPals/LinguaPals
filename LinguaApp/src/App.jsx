@@ -6,8 +6,6 @@ import WelcomePage from './pages/welcome_page.jsx';
 
 function App() {
     const [user, setUser] = useState(null); 
-
-    
     return (
         <section>
             {user ? (
@@ -17,7 +15,6 @@ function App() {
             )}
             {/* <Dashboard /> */}
         </section>
-
     )
 }
 

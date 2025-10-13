@@ -14,7 +14,6 @@ function EmailInput() {
             placeholder="Email"
             value={email}
             onChange={handleChange}
-          
         />
         
         

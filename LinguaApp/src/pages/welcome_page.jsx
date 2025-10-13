@@ -29,6 +29,16 @@ function WelcomePage ({ setUser }){
                         <EmailInput />
                         <PasswordInput />
                         <SignIn />
+                        <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            width: "300px",
+                            color: "gray"
+                        }}>
+                            <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray"}}/>
+                            <span style={{ margin: "0 10px" }}>or</span>
+                            <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray"}}/>
+                        </div>
                         <button onClick={signInWithGoogle}
                         style={{
                             background: "none",
