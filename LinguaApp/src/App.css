@@ -58,6 +58,7 @@ body {
 
 .dropdown-menu li:hover {
   color: #cceeff;
+  text-decoration: underline;
   cursor:pointer;
 }
 
@@ -197,11 +198,20 @@ body {
   margin-left: 0;
 }
 
+.contact-us li:hover {
+  text-decoration: underline;
+  color: #888888;
+  cursor:pointer;
+}
+
 .need-help ul{
   list-style-type:disc;
   text-align: left;
   color: #bbbbbb;
-  
+}
+.need-help li:hover {
+  color: #cceeff;
+  cursor:pointer;
 }
 
 .socials {
