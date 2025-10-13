@@ -1,5 +1,10 @@
 import TopBar from '../components/top_bar.jsx'
 import Card from '../components/card.jsx'
+import BottomBar from '../components/bottom_bar.jsx'
+
+function matchUser(){
+    return 0;
+}
 
 function Dashboard({ user, setUser }) {
     return (
@@ -9,15 +14,17 @@ function Dashboard({ user, setUser }) {
             </div>
 
             <div className="content">
-                <h1 className="logo">LinguaPals</h1> {/*this will prolly get switched out for custom image */}
-                <div className="dashboard-cards">
-                    <Card title='Card 1' /> {/* Card 1 will be past video history */}
-
-                    <Card title='Card 2' /> {/* Card 2 will have the match me button */}
-
-                    <Card title='Card 3' /> {/* Card 3 will have stats / tbd */}
+                <h1 className="logo">LinguaPals</h1>
+                <div className="center-box">
+                    <button className="match-button"
+                        onClick={matchUser}>
+                        Match Me!
+                    </button>
+                    <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
+                    <h4 style={{ color: "black", margin: "5px"}}>Your turn to respond</h4>
                 </div>
             </div>
+            <BottomBar />
 
         </>
     )
