@@ -1,34 +1,40 @@
-import "./loadEnviroment.js";
+// backend/index.js
+import "./loadEnviroment.js";       // loads .env once
 
-import dotenv from "dotenv";
-import { MongoClient } from "mongodb";
+import express from "express";
+import cors from "cors";
 
-dotenv.config();
+// Importing this ensures the DB connects once at startup.
+// (conn.js exports a connected db instance on import)
+import { connectDB } from "./db/conn.js";
 
-const uri = process.env.ATLAS_URI;
 
-if (!uri) {
-  console.error("❌ Missing ATLAS_URI in .env file");
-  process.exit(1);
-}
+import healthRouter from "./routes/health.js";
 
-const client = new MongoClient(uri);
+const PORT = parseInt(process.env.PORT || "5050", 10);
+const ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
 
-async function testConnection() {
+const app = express();
+app.use(cors({ origin: ORIGIN, credentials: true }));
+app.use(express.json());
+
+// Health check
+app.use("/health", healthRouter);
+
+// (Optional) When you’re ready, mount your posts routes here:
+// import postsRouter from "./routes/posts.js";
+// app.use("/posts", postsRouter);
+
+const start = async () => {
   try {
-    await client.connect();
-    console.log("Successfully connected to MongoDB Atlas!");
-
-    // Try listing databases to confirm the connection
-    const databases = await client.db().admin().listDatabases();
-    console.log("Databases:");
-    databases.databases.forEach(db => console.log(` - ${db.name}`));
+    await connectDB(); // connect once at startup
+    app.listen(PORT, () => {
+      console.log(`✅ API listening on http://localhost:${PORT}`);
+    });
   } catch (err) {
-    console.error("Connection failed:", err);
-  } finally {
-    await client.close();
-    console.log("Connection closed.");
+    console.error("❌ Failed to connect to MongoDB:", err?.message || err);
+    process.exit(1);
   }
-}
+};
 
-testConnection();
+start();
