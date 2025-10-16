@@ -11,8 +11,8 @@ const client = new MongoClient(uri, {
 let _db = null;
 
 export async function connectDB() {
-  if (_db) return _db;                         // already connected
-  await client.connect();                      // connect once
+  if (_db) return _db;
+  await client.connect();
   const dbName = process.env.DB_NAME || "linguapals";
   _db = client.db(dbName);
   return _db;
@@ -25,4 +25,9 @@ export function getDb() {
 
 export function getClient() {
   return client;
+}
+
+// (Optional convenience) direct accessor for 'users' collection.
+export function getUsersCollection() {
+  return getDb().collection("users");
 }
