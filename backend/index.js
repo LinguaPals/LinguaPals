@@ -1,34 +1,51 @@
+// backend/index.js
 import "./loadEnviroment.js";
 
-import dotenv from "dotenv";
-import { MongoClient } from "mongodb";
+import express from "express";
+import cors from "cors";
+import { connectDB, getDb } from "./db/conn.js";
+import healthRouter from "./routes/health.js";
+import { initFirebaseAdmin } from "./lib/firebaseAdmin.js";
+import { ensureIndexes } from "./startup/ensureIndexes.js";
+import authRouter from "./routes/auth.js";
 
-dotenv.config();
+const PORT = parseInt(process.env.PORT || "5050", 10);
+const ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
 
-const uri = process.env.ATLAS_URI;
+const app = express();
+app.use(
+  cors({
+    origin: ORIGIN,
+    credentials: true, // allow cookies if needed later
+  })
+);
+app.use(express.json());
 
-if (!uri) {
-  console.error("❌ Missing ATLAS_URI in .env file");
-  process.exit(1);
-}
+// Health check
+app.use("/health", healthRouter);
 
-const client = new MongoClient(uri);
+// Auth session endpoint (expects Firebase ID token from frontend)
+app.use("/auth", authRouter);
 
-async function testConnection() {
+const start = async () => {
   try {
-    await client.connect();
-    console.log("Successfully connected to MongoDB Atlas!");
+    // 1) Connect to Mongo once
+    await connectDB();
 
-    // Try listing databases to confirm the connection
-    const databases = await client.db().admin().listDatabases();
-    console.log("Databases:");
-    databases.databases.forEach(db => console.log(` - ${db.name}`));
+    // 2) Initialize Firebase Admin (fails fast if creds misconfigured)
+    initFirebaseAdmin();
+
+    // 3) Enforce unique indexes (email + firebaseUid)
+    await ensureIndexes(getDb());
+
+    app.listen(PORT, () => {
+      console.log(`✅ API listening on http://localhost:${PORT}`);
+      console.log(`   CORS origin: ${ORIGIN}`);
+    });
   } catch (err) {
-    console.error("Connection failed:", err);
-  } finally {
-    await client.close();
-    console.log("Connection closed.");
+    console.error("❌ Startup failure:", err?.message || err);
+    process.exit(1);
   }
-}
+};
 
-testConnection();
+start();
