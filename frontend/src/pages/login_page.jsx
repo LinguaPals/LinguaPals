@@ -1,23 +1,21 @@
 import GoogleIcon from "../images/SignInWithGoogle.png"
 import EmailInput from "../components/email_button.jsx"
 import PasswordInput from "../components/password_button.jsx"
-import SignIn from "../components/signIn.jsx"
+import LogIn from "../components/login.jsx"
 import React from "react";
 import {useState} from 'react'
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../firebase/firebaseConfig.js"
 import { Link, useNavigate } from "react-router-dom";
 
-
-
-function SignInPage (){
+function LogInPage(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-
+    
     const handleSubmit = async () => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             
             navigate("/dashboard");
@@ -36,17 +34,16 @@ function SignInPage (){
         <>
             <div className="welcomePage">
                 <div className="main-box">
-                    <h1 className="sign-in-logo">Sign Up</h1>
+                    <h1 className="sign-in-logo">Welcome Back</h1>
                     <hr />
                     <div className="loginButtons">
                         <EmailInput value={email} onChange={setEmail}/>
                         <PasswordInput value={password} onChange={setPassword}/>
-                        <SignIn onClick={handleSubmit}/>
+                        <LogIn onClick={handleSubmit}/>
                         <p style={{color:"black"}}>
-                            Already have an account?{" "}
-                            <Link to='/'>Sign in</Link>
+                            Dont have an account?{" "}
+                            <Link to="/signup">Create one</Link>
                         </p>
-                        
                         <div style={{
                             display: "flex",
                             alignItems: "center",
@@ -74,4 +71,4 @@ function SignInPage (){
         </>
     )
 }
-export default SignInPage;
+export default LogInPage;

@@ -1,10 +1,10 @@
 import CompanyLogo from "/src/images/temporary_logo.jpeg"
 import ProfileImg from "/src/images/profile.png"
 import React, { useState } from "react";
-
+import { useNavigate } from 'react-router-dom'
 const TopBar = ({ user, setUser }) => {
     const [isOpen, setIsOpen] = useState(false);
-
+    const navigate = useNavigate();
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     }
@@ -13,7 +13,7 @@ const TopBar = ({ user, setUser }) => {
         // where dropdown click logic goes
         setIsOpen(false);
         if (option === 'Log Out') {
-            setUser(null);
+            navigate('/');
         }
         console.log('Selected option:', option);
         
