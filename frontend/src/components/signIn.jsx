@@ -1,7 +1,10 @@
-function SignIn() {
+import React from 'react'
+
+function SignIn( { onClick }) {
+    
     return (
         <div className="sign-in">
-            <button>
+            <button onClick={ onClick }>
                 Sign In
             </button>
         </div>

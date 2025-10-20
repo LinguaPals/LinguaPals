@@ -3,9 +3,14 @@ import EmailInput from "../components/email_button.jsx"
 import PasswordInput from "../components/password_button.jsx"
 import SignIn from "../components/signIn.jsx"
 import React from "react";
-function WelcomePage ({ setUser }){
-    /* Once we get mongo set up put in the sign in with google feature here, as well as user authentication */
-    /* Then change the user var so the App() switches states to Dashboard */
+import {useState} from 'react'
+import { createUserWithEmailAndPassword } from "firebase/auth"
+import { auth } from "../firebase/firebaseConfig.js"
+
+function SignInPage ({ setUser }){
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const handleDebugLogin = () => {
         const fakeUser = {
             name: "Debug",
@@ -13,6 +18,17 @@ function WelcomePage ({ setUser }){
         };
         setUser(fakeUser);
     }
+
+    const handleSubmit = async () => {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            setUser(user);
+            console.log("User Created:", user);
+        } catch(error) {
+            console.error("Signup Error:", error.code, error.message);
+        }
+    };
 
     const signInWithGoogle = async () => {
         //this is temporary and does nothing
@@ -26,9 +42,9 @@ function WelcomePage ({ setUser }){
                     <h1 className="sign-in-logo">LinguaPals</h1>
                     <hr />
                     <div className="loginButtons">
-                        <EmailInput />
-                        <PasswordInput />
-                        <SignIn />
+                        <EmailInput value={email} onChange={setEmail}/>
+                        <PasswordInput value={password} onChange={setPassword}/>
+                        <SignIn onClick={handleSubmit}/>
                         <div style={{
                             display: "flex",
                             alignItems: "center",
@@ -61,4 +77,4 @@ function WelcomePage ({ setUser }){
         </>
     )
 }
-export default WelcomePage;
+export default SignInPage;

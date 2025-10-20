@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Dashboard from './pages/dashboard.jsx'
-import WelcomePage from './pages/welcome_page.jsx';
+import SignInPage from './pages/sign_in_page.jsx';
 
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
             {user ? (
             <Dashboard user={user} setUser={setUser}/>
             ) : (
-            <WelcomePage setUser={setUser}/>
+            <SignInPage setUser={setUser}/>
             )}
             {/* <Dashboard /> */}
         </section>

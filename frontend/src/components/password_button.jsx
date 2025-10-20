@@ -1,20 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 
-function PasswordInput() {
-    const [password, setPassword] = useState("");
-
-    const handleChange = (event) => {
-        setPassword(event.target.value);
-    };
+function PasswordInput({ value, onChange }) {
 
     return (
         <div style={{ textAlign: "center" }}>
         <input
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={handleChange}
-           
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
         />
         </div>
     );
