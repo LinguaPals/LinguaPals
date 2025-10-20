@@ -21,42 +21,34 @@ function WelcomePage ({ setUser }){
 
     return (
         <>
-            <div className="welcomePage">
-                <div className="main-box">
-                    <h1 className="sign-in-logo">LinguaPals</h1>
-                    <hr />
-                    <div className="loginButtons">
-                        <EmailInput />
-                        <PasswordInput />
-                        <SignIn />
-                        <div style={{
-                            display: "flex",
-                            alignItems: "center",
-                            width: "300px",
-                            color: "gray"
-                        }}>
-                            <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray"}}/>
-                            <span style={{ margin: "0 10px" }}>or</span>
-                            <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray"}}/>
-                        </div>
-                        <button onClick={signInWithGoogle}
-                        style={{
-                            background: "none",
-                            border: "none",
-                            padding: 0
-                        }}>
-                            <img src={ GoogleIcon }
-                            alt="Sign in with Google"
-                            className="google-icon"/>
-                        </button>
-                        {/*debugging button to switch to dash */}
-                        <button
-                            onClick={handleDebugLogin}>
-                            Go to dashboard
-                        </button>
+            <div className="welcome-split">
+                <div className="promo-panel">
+                    <div className="promo-content">
+                        <h1>Welcome to LinguaPals</h1>
+                        <p>Find language partners, practice speaking, and grow together.</p>
                     </div>
                 </div>
 
+                <div className="login-panel">
+                    <div className="main-box small">
+                        <h1 className="sign-in-logo">LinguaPals</h1>
+                        <hr />
+                        <div className="loginButtons small">
+                            <EmailInput />
+                            <PasswordInput />
+                            <SignIn />
+                            <div className="or-separator">
+                                <hr />
+                                <span>or</span>
+                                <hr />
+                            </div>
+                            <button onClick={signInWithGoogle} className="google-button">
+                                <img src={ GoogleIcon } alt="Sign in with Google" className="google-icon" />
+                            </button>
+                            <button onClick={handleDebugLogin} className="debug-button">Go to dashboard</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
     )
