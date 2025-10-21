@@ -2,6 +2,7 @@
 html, body, #root {
   --main-color: #f2f2f2;
   --top-bar-color: rgb(166,192,94);
+  --gold: rgb(243,206,73);
   height: 100%;
   width: 100%;
   margin: 0;
@@ -42,6 +43,7 @@ body {
   height: 60px;
   border-bottom: 1px solid #555555;
   background-color: var(--top-bar-color);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .dropdown-menu {
@@ -72,13 +74,12 @@ body {
 }
 
 .center-box {
-  border-left: 1px solid #cccccc;
-  border-bottom: 1px solid #bbbbbb;
-  border-right: 1px solid #dddddd;
+  
   width: 350px;
   height: 500px;
   border-radius: 30px;
-  background-color: #ffffff
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .match-button {
@@ -88,8 +89,30 @@ body {
   font-size: 20px;
   font-weight: 900;
   height: 50px;
-  color: #000000;
-  background-color: rgb(243,206,73)
+  color: #ffffff;
+  background: linear-gradient(45deg, #b8860b, #ffd700, #ffec8b, #daa520);
+  background-size: 300% 300%;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: background-position 2s ease, transform 0.2s ease;
+}
+
+.match-button:hover {
+  background-position: right center;
+  transform: scale(1.05);
+}
+
+@keyframes shine {
+  0% { background-position: left center; }
+  100% { background-position: right center; }
+}
+
+.match-button.shine {
+  animation: shine 3s linear infinite;
 }
 
 #h2 {
@@ -137,6 +160,7 @@ body {
   border: 2px solid #ededed;
   padding: 15px;
   border-radius: 15%;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 .loginButtons{
   display: flex;
@@ -218,4 +242,42 @@ body {
   display: flex;
   gap: 30px;
   margin-top: 20px;
+}
+
+/*============================================
+================new user survey===============
+=============================================*/
+.survey-page {
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+.survey-form {
+  color: black;
+  display: flex;
+  flex-direction: column;
+  width: 450px;
+  align-items: center;
+  border: 1px solid #eeeeee;
+  background-color: #ffffff;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+
+.survey-field {
+  background-color: #ffffff;
+  border-color: var(--gold);
+  color: black;
+}
+
+select:hover{
+  cursor:grab;
+}
+
+#name {
+  width: 200px;
 }
