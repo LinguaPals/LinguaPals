@@ -12,7 +12,7 @@ function LogInPage(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    
+
     const handleSubmit = async () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -40,7 +40,7 @@ function LogInPage(){
                         <EmailInput value={email} onChange={setEmail}/>
                         <PasswordInput value={password} onChange={setPassword}/>
                         <LogIn onClick={handleSubmit}/>
-                        <p style={{color:"black"}}>
+                        <p style={{color:"black", margin:"0px"}}>
                             Dont have an account?{" "}
                             <Link to="/signup">Create one</Link>
                         </p>

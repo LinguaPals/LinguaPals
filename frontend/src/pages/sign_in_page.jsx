@@ -7,13 +7,15 @@ import {useState} from 'react'
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../firebase/firebaseConfig.js"
 import { Link, useNavigate } from "react-router-dom";
-
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 
 
 function SignInPage (){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const provider = new GoogleAuthProvider();
+
 
     const handleSubmit = async () => {
         try {
@@ -28,8 +30,17 @@ function SignInPage (){
     };
 
     const signInWithGoogle = async () => {
-        //this is temporary and does nothing
-        const res = await fetch()
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            const user = result.user;
+
+            navigate("/dashboard");
+            console.log("User Created with Google: ", user);
+        } catch(error) {
+            console.error("Sign in with Google error: ", error.code, error.message);
+        }
     };
 
     return (
@@ -42,7 +53,7 @@ function SignInPage (){
                         <EmailInput value={email} onChange={setEmail}/>
                         <PasswordInput value={password} onChange={setPassword}/>
                         <SignIn onClick={handleSubmit}/>
-                        <p style={{color:"black"}}>
+                        <p style={{color:"black", margin:"0px"}}>
                             Already have an account?{" "}
                             <Link to='/'>Sign in</Link>
                         </p>
