@@ -273,6 +273,9 @@ body {
   border-color: var(--gold);
   color: black;
 }
+select {
+  text-align: center;
+}
 
 select:hover{
   cursor:grab;

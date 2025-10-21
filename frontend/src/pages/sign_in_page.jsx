@@ -22,7 +22,7 @@ function SignInPage (){
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             
-            navigate("/dashboard");
+            navigate("/survey");
             console.log("User Created:", user);
         } catch(error) {
             console.error("Signup Error:", error.code, error.message);

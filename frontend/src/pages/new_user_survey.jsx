@@ -1,9 +1,19 @@
 import React from "react"
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function NewUserSurvey( {user} ) {
     const [language, setLanguage] = useState(null);
     const [proficiency, setProficiency] = useState(null);
+    const navigate = useNavigate();
+
+    const handleSubmit = () => {
+        //log info here
+        
+        //move to dashboard
+        navigate("/dashboard");
+        console.log("moving to dashboard");
+    }
     return (
         <>
             <div className="survey-page">
@@ -43,11 +53,14 @@ function NewUserSurvey( {user} ) {
                      >
                         <option value="">-- Select a level --</option>
                         <option value="brand-new">-- Brand New --</option>
-                        <option value="spanish">-- A1: Can use basic phrases  --</option>
-                        <option value="french">-- A2: Can use and understand simple sentences --</option>
-                        <option value="japanese">-- B2:  --</option>
+                        <option value="a1">-- A1: Can use basic phrases  --</option>
+                        <option value="a2">-- A2: Can use and understand simple sentences --</option>
+                        <option value="b1">-- B1: Can describe experiences and events, in multiple tenses --</option>
+                        <option value="b2">-- B2: Can interact with native speakers without exessive strain --</option>
+                        <option value="c1">-- C1: Can express ideas fluently and spontaneously --</option>
+                        <option value="c2">-- C2: Near pefect fluency --</option>
                      </select>
-                     <button type="submit">Submit</button>
+                     <button onClick={handleSubmit} type="submit">Submit</button>
                 </form>
             </div>
         </>
