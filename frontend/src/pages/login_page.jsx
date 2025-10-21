@@ -7,11 +7,13 @@ import {useState} from 'react'
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../firebase/firebaseConfig.js"
 import { Link, useNavigate } from "react-router-dom";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 
 function LogInPage(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const provider = new GoogleAuthProvider();
 
     const handleSubmit = async () => {
         try {
@@ -26,8 +28,17 @@ function LogInPage(){
     };
 
     const signInWithGoogle = async () => {
-        //this is temporary and does nothing
-        const res = await fetch()
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            const user = result.user;
+
+            navigate("/dashboard");
+            console.log("User signed in with Google: ", user);
+        } catch(error) {
+            console.error("Log in with Google error: ", error.code, error.message);
+        }
     };
 
     return (
