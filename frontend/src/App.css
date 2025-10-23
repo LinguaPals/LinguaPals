@@ -2,12 +2,12 @@
 html, body, #root {
   --main-color: #f2f2f2;
   --top-bar-color: rgb(166,192,94);
-  --gold: rgb(243,206,73);
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
-
+  background: var(--main-color) !important;
+  min-height: 100vh;
 }
 
 .content {
@@ -43,7 +43,6 @@ body {
   height: 60px;
   border-bottom: 1px solid #555555;
   background-color: var(--top-bar-color);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .dropdown-menu {
@@ -73,46 +72,113 @@ body {
   object-fit: cover;
 }
 
-.center-box {
-  
+.dashboard-layout {
+  display: flex;
+  gap: 30px;
+  margin: 20px;
+  width: 90%;
+  max-width: 1200px;
+  align-items: stretch; /* ensure children stretch to same height */
+}
+
+.left-card {
   width: 350px;
-  height: 500px;
+  padding: 25px;
   border-radius: 30px;
   background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: 1px solid #cccccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.left-card:hover {
+  transform: translateY(-5px);
+}
+
+.right-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  /* give right-cards a fixed width to match left */
+}
+
+.right-cards .card {
+  width: 350px;
+  height: 235px;
+  padding: 25px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.turn-to-respond {
+  color: green;
+}
+
+.right-cards .card:hover {
+  transform: translateY(-5px);
+}
+
+.card h2, .left-card h2 {
+  color: var(--top-bar-color);
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.card p, .left-card p {
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .match-button {
-  margin: 10px;
-  width: 300px;
+  margin: 10px 0;
+  width: 100%;
   border-radius: 30px;
   font-size: 20px;
   font-weight: 900;
   height: 50px;
-  color: #ffffff;
-  background: linear-gradient(45deg, #b8860b, #ffd700, #ffec8b, #daa520);
-  background-size: 300% 300%;
-  color: white;
-  font-weight: bold;
+  color: #000000;
+  background-color: rgb(243,206,73);
   border: none;
-  padding: 10px 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  transition: background-position 2s ease, transform 0.2s ease;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .match-button:hover {
-  background-position: right center;
-  transform: scale(1.05);
+  background-color: rgb(233, 196, 63);
 }
 
-@keyframes shine {
-  0% { background-position: left center; }
-  100% { background-position: right center; }
+.chat-status, .progress-stats {
+  margin-top: auto;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 15px;
+  text-align: center;
 }
 
-.match-button.shine {
-  animation: shine 3s linear infinite;
+.stat-item {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.stat-item h4 {
+  color: var(--top-bar-color);
+  font-size: 24px;
+  margin: 0;
+}
+
+.stat-item p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-around;
 }
 
 #h2 {
@@ -152,15 +218,16 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 80vh;
+  height: 100%;
+  width: 100%;
+  background: transparent;
 }
 
 .main-box{
   background-color: #ffffff;
   border: 2px solid #ededed;
-  padding: 15px;
-  border-radius: 15%;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 12px;
+  border-radius: 12px;
 }
 .loginButtons{
   display: flex;
@@ -173,12 +240,12 @@ body {
   background-color: #eeeeee;
   color: black;
   text-align: left;
-  height: 50px;
-  width: 350px;
+  height: 40px;
+  width: 260px;
   padding-left: 10px;
-  font-size: 16px;
-  margin: 3px;
-  border-radius: 15px;
+  font-size: 14px;
+  margin: 6px 0;
+  border-radius: 8px;
   border: 1px solid #dcdcdc;
 }
 
@@ -192,9 +259,92 @@ body {
   text-align: center;
   margin: 5px;
 }
+.google-button {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  display: inline-block;
+  cursor: pointer;
+}
+
 .google-icon {
-  padding: 5px;
-  width: 200px;
+  display: block;
+  width: 140px;
+  padding: 0;
+  background: transparent;
+}
+
+/* ============Landing Page========== */
+.landing-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, var(--main-color) 0%, #ffffff 100%);
+}
+
+.landing-content {
+  text-align: center;
+  max-width: 1200px;
+  padding: 2rem;
+}
+
+.landing-title {
+  color: var(--top-bar-color);
+  font-size: 3.5em;
+  margin-bottom: 0.5rem;
+}
+
+.landing-subtitle {
+  color: #666;
+  font-size: 1.5em;
+  margin-bottom: 3rem;
+}
+
+.landing-features {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.feature {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+.feature h3 {
+  color: var(--top-bar-color);
+  margin-bottom: 1rem;
+}
+
+.feature p {
+  color: #666;
+}
+
+.get-started-button {
+  background-color: var(--top-bar-color);
+  color: white;
+  font-size: 1.2em;
+  padding: 1rem 3rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.get-started-button:hover {
+  transform: scale(1.05);
+  background-color: #8ca348;
 }
 
 /* ============Bottom Bar========== */
@@ -244,43 +394,76 @@ body {
   margin-top: 20px;
 }
 
-/*============================================
-================new user survey===============
-=============================================*/
-.survey-page {
-  display:flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-}
-.survey-form {
-  color: black;
+/* Welcome split layout: left promo (60%) and right login (40%) */
+.welcome-split {
   display: flex;
-  flex-direction: column;
-  width: 450px;
+  height: calc(100vh - 60px); /* account for top bar */
+  overflow: hidden;
+}
+
+.promo-panel {
+  flex: 0 0 60%;
+  background: linear-gradient(180deg, var(--top-bar-color), #7aa63a);
+  color: #fff;
+  display: flex;
   align-items: center;
-  border: 1px solid #eeeeee;
-  background-color: #ffffff;
-  padding-top: 10px;
-  padding-bottom: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: clamp(1rem, 3vw, 2rem) clamp(1.5rem, 3.5vw, 3rem);
 }
 
-
-.survey-field {
-  background-color: #ffffff;
-  border-color: var(--gold);
-  color: black;
-}
-select {
-  text-align: center;
+.promo-content {
+  max-width: 720px;
 }
 
-select:hover{
-  cursor:grab;
+.promo-content h1 {
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.05;
 }
 
-#name {
-  width: 200px;
+.promo-content p {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+}
+
+.login-panel {
+  flex: 0 0 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.main-box.small {
+  width: clamp(280px, 35vw, 360px);
+  padding: clamp(10px, 1.5vw, 14px);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+}
+
+.loginButtons.small input{
+  width: clamp(200px, 22vw, 240px);
+  height: clamp(36px, 3.5vh, 40px);
+}
+
+.or-separator {
+  display:flex;
+  align-items:center;
+  width: clamp(200px, 22vw, 240px);
+  margin: 8px 0;
+}
+
+.or-separator hr{flex:1;border:none;border-top:1px solid #ddd}
+.or-separator span{margin:0 10px;color:#888}
+
+.google-icon{display:block;width:clamp(100px,18vw,140px);padding:0;background:transparent}
+
+.debug-button{margin-top:8px}
+
+@media (max-width: 900px){
+  .welcome-split{flex-direction:column;height:auto}
+  .promo-panel{flex-basis:40%;padding:1.25rem}
+  .login-panel{flex-basis:60%;padding:1rem}
+  .main-box.small{width:320px}
 }
