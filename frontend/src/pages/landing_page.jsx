@@ -1,9 +1,11 @@
 import React from 'react';
 import '../App.css';
+import { useNavigate } from 'react-router-dom';
 
-function LandingPage({ setShowLogin }) {
+function LandingPage() {
+    const navigate = useNavigate();
     const handleGetStarted = () => {
-        setShowLogin(true);
+        navigate('/login');
     };
 
     return (
