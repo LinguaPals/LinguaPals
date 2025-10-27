@@ -1,51 +1,23 @@
-// backend/index.js
 import "./loadEnviroment.js";
-
+import dotenv from "dotenv";
 import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
-import { connectDB, getDb } from "./db/conn.js";
-import healthRouter from "./routes/health.js";
-import { initFirebaseAdmin } from "./lib/firebaseAdmin.js";
-import { ensureIndexes } from "./startup/ensureIndexes.js";
-import authRouter from "./routes/auth.js";
+import authRoutes from "./routes/auth.js";
+import postRoutes from "./routes/posts.js";
 
-const PORT = parseInt(process.env.PORT || "5050", 10);
-const ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+dotenv.config();
 
 const app = express();
-app.use(
-  cors({
-    origin: ORIGIN,
-    credentials: true, // allow cookies if needed later
-  })
-);
+app.use(cors());
 app.use(express.json());
 
-// Health check
-app.use("/health", healthRouter);
+// connecting to MongoDB
+mongoose.connect(process.env.ATLAS_URI)
+.then(() => console.log("Connected to MongoDB."))
+.catch(error => console.error("MongoDB connection error:", error));
 
-// Auth session endpoint (expects Firebase ID token from frontend)
-app.use("/auth", authRouter);
+app.use("/api/posts", postRoutes)
+app.use("/api/auth", authRoutes);
 
-const start = async () => {
-  try {
-    // 1) Connect to Mongo once
-    await connectDB();
-
-    // 2) Initialize Firebase Admin (fails fast if creds misconfigured)
-    initFirebaseAdmin();
-
-    // 3) Enforce unique indexes (email + firebaseUid)
-    await ensureIndexes(getDb());
-
-    app.listen(PORT, () => {
-      console.log(`✅ API listening on http://localhost:${PORT}`);
-      console.log(`   CORS origin: ${ORIGIN}`);
-    });
-  } catch (err) {
-    console.error("❌ Startup failure:", err?.message || err);
-    process.exit(1);
-  }
-};
-
-start();
+app.listen(process.env.PORT, () => console.log(` Server running on http://localhost:${process.env.PORT}`));
