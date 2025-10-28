@@ -61,7 +61,7 @@ function SignInPage (){
                         <SignIn onClick={handleSubmit}/>
                         <p style={{color:"black", margin:"0px"}}>
                             Already have an account?{" "}
-                            <Link to='/'>Sign in</Link>
+                            <Link to='/login'>Sign in</Link>
                         </p>
                         
                         <div style={{
@@ -82,7 +82,7 @@ function SignInPage (){
                         }}>
                             <img src={ GoogleIcon }
                             alt="Sign in with Google"
-                            className="google-icon"/>
+                            id="google-icon"/>
                         </button>
                     </div>
                 </div>

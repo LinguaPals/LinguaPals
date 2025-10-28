@@ -2,6 +2,7 @@
 html, body, #root {
   --main-color: #f2f2f2;
   --top-bar-color: rgb(166,192,94);
+  --gold: rgb(243,206,73);
   height: 100%;
   width: 100%;
   margin: 0;
@@ -129,27 +130,86 @@ body {
   font-size: 24px;
 }
 
-.card p, .left-card p {
-  color: #666;
-  margin-bottom: 20px;
+.center-box { 
+  width: 350px;
+  height: 500px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/*============================================
+================new user survey===============
+=============================================*/
+.survey-page {
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+.survey-form {
+  color: black;
+  display: flex;
+  flex-direction: column;
+  width: 450px;
+  align-items: center;
+  border: 1px solid #eeeeee;
+  background-color: #ffffff;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.survey-form option {
+  text-align:center;
+}
+
+
+.survey-field {
+  background-color: #ffffff;
+  border-color: var(--gold);
+  color: black;
+}
+
+select:hover{
+  cursor:grab;
+}
+
+#name {
+  width: 200px;
 }
 
 .match-button {
-  margin: 10px 0;
-  width: 100%;
-  border-radius: 30px;
+  width: 250px;
   font-size: 20px;
   font-weight: 900;
   height: 50px;
-  color: #000000;
-  background-color: rgb(243,206,73);
+  color: #ffffff;
+  background: linear-gradient(45deg, #b8860b, #ffd700, #ffec8b, #daa520);
+  background-size: 300% 300%;
+  color: white;
+  font-weight: bold;
   border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  border-radius: 30px;
+  margin: 10px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: background-position 2s ease, transform 0.2s ease;
 }
 
 .match-button:hover {
-  background-color: rgb(233, 196, 63);
+  background-position: right center;
+  transform: scale(1.05);
+}
+
+@keyframes shine {
+  0% { background-position: left center; }
+  100% { background-position: right center; }
+}
+
+.match-button.shine {
+  animation: shine 3s linear infinite;
 }
 
 .chat-status, .progress-stats {
@@ -436,7 +496,7 @@ body {
 .main-box.small {
   width: clamp(280px, 35vw, 360px);
   padding: clamp(10px, 1.5vw, 14px);
-  border-radius: 12px;
+  border-radius: 15px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   max-height: calc(100vh - 120px);
   overflow: auto;
@@ -457,7 +517,7 @@ body {
 .or-separator hr{flex:1;border:none;border-top:1px solid #ddd}
 .or-separator span{margin:0 10px;color:#888}
 
-.google-icon{display:block;width:clamp(100px,18vw,140px);padding:0;background:transparent}
+#google-icon{width: 150px;padding:0;background:transparent}
 
 .debug-button{margin-top:8px}
 
