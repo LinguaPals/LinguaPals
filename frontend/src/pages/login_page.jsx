@@ -4,24 +4,32 @@ import PasswordInput from "../components/password_button.jsx"
 import LogIn from "../components/login.jsx"
 import React from "react";
 import {useState} from 'react'
-import { signInWithEmailAndPassword } from "firebase/auth"
-import { auth } from "../firebase/firebaseConfig.js"
 import { Link, useNavigate } from "react-router-dom";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import axios from 'axios'
 
 function LogInPage(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const provider = new GoogleAuthProvider();
 
     const handleSubmit = async () => {
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            
-            navigate("/dashboard");
-            console.log("User Created:", user);
+            axios.post("http://localhost:5050/api/auth/login", {
+                email: email,
+                password: password
+            })
+            .then((response) => {
+                const data = response.data;
+
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("userID", data.userID);
+
+                navigate("/survey");
+            })
+            .catch(function (error) {
+                console.log("Error: " + error);
+            });
+
         } catch(error) {
             console.error("Signup Error:", error.code, error.message);
         }
