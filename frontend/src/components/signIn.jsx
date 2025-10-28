@@ -5,7 +5,7 @@ function SignIn( { onClick }) {
     return (
         <div className="sign-in">
             <button onClick={ onClick }>
-                Sign In
+                Sign Up
             </button>
         </div>
     );
