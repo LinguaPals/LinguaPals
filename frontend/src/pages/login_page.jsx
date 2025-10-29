@@ -27,7 +27,7 @@ function LogInPage(){
                 navigate("/survey");
             })
             .catch(function (error) {
-                console.log("Error: " + error);
+                window.alert("Error: " + error.response?.data?.message);
             });
 
         } catch(error) {

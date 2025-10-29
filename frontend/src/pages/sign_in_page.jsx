@@ -19,19 +19,17 @@ function SignInPage (){
                 password: password
             })
             .then((response) => {
-                const data = response.data;
-
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("userID", data.userID);
+                localStorage.setItem("token", response.data.data.token);
+                localStorage.setItem("userID", response.data.data.userID);
 
                 navigate("/survey");
             })
             .catch(function (error) {
-                console.log("Error: " + error);
+                window.alert("Error: " + error.response?.data?.message);
             });
 
         } catch(error) {
-            console.error("Signup Error:", error.code, error.message);
+            console.error("Error: " + error);
         }
     };
 

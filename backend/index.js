@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
+import userRoutes from "./routes/users.js"
 
 dotenv.config();
 
@@ -19,5 +20,6 @@ mongoose.connect(process.env.ATLAS_URI)
 
 app.use("/api/posts", postRoutes)
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 app.listen(process.env.PORT, () => console.log(` Server running on http://localhost:${process.env.PORT}`));

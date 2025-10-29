@@ -1,19 +1,42 @@
 import React from "react"
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
-function NewUserSurvey( {user} ) {
-    const [language, setLanguage] = useState(null);
-    const [proficiency, setProficiency] = useState(null);
+function NewUserSurvey() {
+    const [language, setLanguage] = useState("");
+    const [proficiency, setProficiency] = useState("");
+    const [username, setUsername] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = () => {
-        //log info here
+    const handleSubmit = (e) => {
+        e.preventDefault();
         
-        //move to dashboard
-        navigate("/dashboard");
-        console.log("moving to dashboard");
+        const userID = localStorage.getItem("userID");
+        console.log(userID);
+
+        axios.put(`http://localhost:5050/api/users/${userID}`, {
+            username: username,
+            language: language,
+            proficiency: proficiency
+        })
+        .then((response) => {
+            console.log("Updated User:", response.data);
+            navigate("/dashboard");
+        })
+        .catch((error) => {
+    console.error("Full error:", error);
+
+    const msg =
+        error?.response?.data?.message ||   // backend error message
+        error?.message ||                   // axios/network message
+        "Unknown error occurred";
+
+    alert(msg);
+});
+
     }
+
     return (
         <>
             <div className="survey-page">
@@ -27,6 +50,8 @@ function NewUserSurvey( {user} ) {
                         placeholder='ex) penjaminpals'
                         required
                         className="survey-field"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)} 
                        
                     />
 
