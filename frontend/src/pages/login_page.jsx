@@ -24,7 +24,7 @@ function LogInPage(){
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("userID", data.userID);
 
-                navigate("/survey");
+                navigate("/dashboard");
             })
             .catch(function (error) {
                 window.alert("Error: " + error.response?.data?.message);

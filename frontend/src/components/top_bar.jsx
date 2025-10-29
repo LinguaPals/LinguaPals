@@ -13,7 +13,7 @@ const TopBar = ({ user, setUser }) => {
         // where dropdown click logic goes
         setIsOpen(false);
         if (option === 'Log Out') {
-            navigate('/');
+            navigate('/login');
         }
         console.log('Selected option:', option);
         

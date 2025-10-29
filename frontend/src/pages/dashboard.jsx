@@ -15,13 +15,19 @@ function Dashboard({ user, setUser }) {
 
             <div className="content">
                 <h1 className="logo">LinguaPals</h1>
-                <div className="center-box">
-                    <button className="match-button"
-                        onClick={matchUser}>
-                        Match Me!
-                    </button>
-                    <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
-                    <h4 style={{ color: "black", margin: "5px"}}>Your turn to respond</h4>
+                <div className="dashboard-layout">
+                    <div className="center-box">
+                        <button className="match-button"
+                            onClick={matchUser}>
+                            Match Me!
+                        </button>
+                        <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
+                        <h4 style={{ color: "black", margin: "5px"}}>Your turn to respond</h4>
+                    </div>
+                    <div className="right-cards">
+                        <Card title="Recent Matches" />
+                        <Card title="Learning Progress" />
+                    </div>
                 </div>
             </div>
             <BottomBar />
