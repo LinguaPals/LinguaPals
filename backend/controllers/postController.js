@@ -1,56 +1,76 @@
 import mongoose from "mongoose";
-import Post from '../models/postModel.js';
+import Post from "../models/postModel.js";
+import { createVideoPost } from "../services/videoService.js";
 
 export const getPosts = async (req, res) => {
-    try {
-        const posts = await Post.find({});
-        res.status(200).json({ success: true, data: posts});
-    } catch (error) {
-        console.log("error in  fetching posts");
-        res.status(500).json({ success: false, message: "Server Error" });
-    }
-}
+  try {
+    const posts = await Post.find({}).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: posts });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
 export const createPost = async (req, res) => {
-    const post = req.body;
-
-    if(false) { // fill in later
-        return res.status(400).json({ success:false, message: "Provide all fields"});
+  try {
+    const payload = req.body;
+    if (!payload) return res.status(400).json({ success: false, message: "Missing request body" });
+    if (payload.type === "video") {
+      const post = await createVideoPost({ userId: req.userId, body: payload });
+      return res.status(201).json({ success: true, data: post });
     }
-
-    const newPost = new Post(post)
-
-    try {
-        await newPost.save();
-        res.status(201).json({ success: true, data: newPost});
-    } catch (error) {
-        console.error("Error in Create Post:", error.message);
-        res.status(500).json({success: false, message: "Server Error"});
-    }
-}
+    const post = new Post(payload);
+    await post.save();
+    res.status(201).json({ success: true, data: post });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
 export const deletePost = async (req, res) => {
-    const {id} = req.params;
-    console.log("id: ", id);
-
-    try {
-        await Post.findByIdAndDelete(id);
-        res.status(200).json({success: true, message: "Post deleted" });
-    } catch(error) {
-        console.log("error in deleting post: ", error.message);
-        res.status(500).json({success: false, message: "Server error" });
-    }
-}
+  try {
+    await Post.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, message: "Post deleted" });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
 export const updatePost = async (req, res) => {
-    const {id} = req.params;
+  try {
+    const updated = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.status(200).json({ success: true, data: updated });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
-    const post = req.body;
+export const listMyDailyPost = async (req, res) => {
+  try {
+    const { dateId } = req.query;
+    const doc = await Post.findOne({ userId: req.userId, dateId }).sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, data: doc ? [doc] : [] });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
-    try {
-        const updatedPost = await Post.findByIdAndUpdate(id, post, {new:true})
-        res.status(200).json({ success: true, data: updatedPost });
-    } catch(error) {
-        res.status(500).json({ success: false, message: "Server Error" })
-    }
-}
+export const listPartnerDailyPost = async (req, res) => {
+  try {
+    const { dateId, matchId } = req.query;
+    const doc = await Post.findOne({ matchId, dateId, userId: { $ne: req.userId } }).sort({ createdAt: 1 });
+    return res.status(200).json({ success: true, data: doc ? [doc] : [] });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const playPost = async (req, res) => {
+  try {
+    const doc = await Post.findById(req.params.id);
+    if (!doc) return res.status(404).json({ success: false, message: "Post not found" });
+    return res.status(200).json({ success: true, data: { id: doc._id, storage: doc.storage, media: doc.media, status: doc.status } });
+  } catch (e) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
