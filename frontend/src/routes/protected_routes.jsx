@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom'
 
 
-function ProtectedDashboard() {
+function ProtectedRoutes() {
     const isLoggedIn = localStorage.getItem("token");
 
     if(!isLoggedIn) {
@@ -12,4 +12,4 @@ function ProtectedDashboard() {
     return <Outlet />;
 }
 
-export default ProtectedDashboard;
+export default ProtectedRoutes;
