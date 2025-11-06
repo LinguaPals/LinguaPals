@@ -13,6 +13,7 @@ const TopBar = ({ user, setUser }) => {
         // where dropdown click logic goes
         setIsOpen(false);
         if (option === 'Log Out') {
+            localStorage.removeItem("token");
             navigate('/login');
         }
         console.log('Selected option:', option);
