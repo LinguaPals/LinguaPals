@@ -25,10 +25,31 @@ export const generateAndPublish = async (weekTag = getWeekTag()) => {
 };
 
 export const getMatchForUser = async (userId, weekTag = getWeekTag()) => {
+  console.log("Searching for match");
   const match = await Match.findOne({ weekTag, $or: [{ userA: userId }, { userB: userId }] }).lean();
-  if (!match) return null;
+  if (!match) {
+    console.log("Couldn't find match");
+    return null;
+  } 
   const partnerId = String(match.userA) === String(userId) ? match.userB : match.userA;
   return { matchId: match._id, partnerId };
 };
 
-export default { generateAndPublish, getMatchForUser };
+export const deleteMatchForUser = async (userId, weekTag = getWeekTag()) => {
+  // Find the match that involves the given user
+  console.log("Im in matchService.js");
+  const match = await Match.findOne({ weekTag, $or: [{ userA: userId }, { userB: userId }] });
+
+  if (!match) {
+    console.log("No match found for user to delete");
+    return { success: false, message: "No match found" };
+  }
+
+  // Delete that match
+  await Match.deleteOne({ _id: match._id });
+  console.log(`Deleted match ${match._id} for user ${userId}`);
+
+  return { success: true, deletedMatchId: match._id };
+};
+
+export default { generateAndPublish, getMatchForUser, deleteMatchForUser };

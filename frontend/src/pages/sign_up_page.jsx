@@ -21,7 +21,7 @@ function SignInPage (){
             .then((response) => {
                 localStorage.setItem("token", response.data.data.token);
                 localStorage.setItem("userID", response.data.data.userID);
-
+                console.log("User signed up");
                 navigate("/survey");
             })
             .catch(function (error) {

@@ -13,7 +13,8 @@ import requireAuth from "./middleware/requireAuth.js";
 import scheduler from "./startup/scheduler.js";
 
 
-dotenv.config();
+
+dotenv.config({});
 
 const app = express();
 app.use(cors());

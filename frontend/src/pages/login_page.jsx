@@ -19,7 +19,7 @@ function LogInPage(){
                 password: password
             })
             .then((response) => {
-                const data = response.data;
+                const data = response.data.data;
 
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("userID", data.userID);

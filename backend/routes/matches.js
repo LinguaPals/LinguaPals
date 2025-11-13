@@ -1,5 +1,5 @@
 import express from "express";
-import { generateAndPublish, getMatchForUser } from "../services/matchService.js";
+import { generateAndPublish, getMatchForUser, deleteMatchForUser } from "../services/matchService.js";
 import { getWeekTag } from "../utils/dateIds.js";
 const router = express.Router();
 
@@ -20,6 +20,27 @@ router.post("/publish", async (req, res) => {
     const pairs = await generateAndPublish(weekTag);
     return res.status(200).json({ success: true, data: pairs });
   } catch (e) {
+    return res.status(500).json({ success: false, message: "Server Error" });
+  }
+});
+
+router.delete("/delete-match", async (req, res) => {
+  console.log("Yo im in the delete-match func");
+  if (!req.userId) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  }
+  try {
+    const weekTag = getWeekTag();
+    const id = req.userId;
+    const result = await deleteMatchForUser(id, weekTag);
+  
+  if(!result.success) {
+    return res.status(404).json({ success: false, message: result.message });
+  } 
+
+  return res.status(200).json({ success: true, message: "Match deleted", data: result });
+  } catch (error) {
+    console.error("Error deleteing match:", error);
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 });
