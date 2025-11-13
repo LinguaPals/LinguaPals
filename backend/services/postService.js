@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Post from "../models/postModel.js";
-import { createVideoPost } from "../services/videoService.js";
+import { createVideoPost } from "./videoService.js";
 
 export const getPosts = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { updateUser } from "../controllers/userController.js";
+import { updateUser } from "../services/userService.js";
 
 router.put("/:id", updateUser);
 
