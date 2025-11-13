@@ -2,7 +2,7 @@ import CompanyLogo from "/src/images/temporary_logo.jpeg"
 import ProfileImg from "/src/images/profile.png"
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom'
-const TopBar = ({ user, setUser }) => {
+const TopBar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     const toggleDropdown = () => {
@@ -19,12 +19,12 @@ const TopBar = ({ user, setUser }) => {
         console.log('Selected option:', option);
         
     };
-
-
+    
+    
     return (
         <div className="top-bar">
             <img src={CompanyLogo} className="top-bar-img" />
-            <p>LinguaPals</p>
+            <p id="welcome-user">Welcome {localStorage.getItem('username')}!</p>
             <div className="profile-dropdown">
                 <button 
                 onClick={ toggleDropdown }

@@ -11,6 +11,43 @@ const getAuthHeaders = () => {
   };
 };
 
+export const generateAndPublish = async () => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/matches/publish`,{}, {
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    console.log('Error creating match:', error);
+    throw error;
+  }
+}
+
+// fetch current match
+export const getMatchForUsers = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/matches/current`, {
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch(error) {
+      console.log('Error matching user:', error);
+      throw error;
+  }
+};
+
+export const deleteMatchForUsers = async () => {
+  axios.delete(`${API_BASE_URL}/matches/delete-match`, { headers: getAuthHeaders() })
+  .then(response => {
+    console.log("Deleted successfully");
+    return response.data;
+  })
+  .catch(error => {
+    console.log("Error deleting match", error);
+    throw error;
+  });
+}
+
 // Get all posts
 export const getPosts = async () => {
   try {

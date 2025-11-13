@@ -45,6 +45,11 @@ body {
   border-bottom: 1px solid #555555;
   background-color: var(--top-bar-color);
 }
+#welcome-user {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 15px;
+}
 
 .dropdown-menu {
   text-align: center;
@@ -205,6 +210,15 @@ select:hover{
 .match-button:hover {
   background-position: right center;
   transform: scale(1.05);
+}
+
+.unmatch-button {
+  color: grey;
+  padding: 0px;
+  background-color: white;
+  width: 100px;
+  border: 1px dotted grey;
+  border-radius: 50px;
 }
 
 @keyframes shine {

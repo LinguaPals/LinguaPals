@@ -22,6 +22,7 @@ function NewUserSurvey() {
         })
         .then((response) => {
             console.log("Updated User:", response.data);
+            localStorage.setItem("username", username);
             navigate("/dashboard");
         })
         .catch((error) => {

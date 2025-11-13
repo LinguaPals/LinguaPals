@@ -3,11 +3,8 @@ import TopBar from '../components/top_bar.jsx'
 import Card from '../components/card.jsx'
 import BottomBar from '../components/bottom_bar.jsx'
 import PostCard from '../components/PostCard.jsx'
-import { getPosts, createPost, deletePost } from '../services/postService.js'
+import { getPosts, createPost, deletePost, generateAndPublish, deleteMatchForUsers } from '../services/postService.js'
 
-function matchUser(){
-    return 0;
-}
 
 function Dashboard({ user, setUser }) {
     const [posts, setPosts] = useState([]);
@@ -15,7 +12,7 @@ function Dashboard({ user, setUser }) {
     const [error, setError] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
-
+    const [usersPair, setUsersPair] = useState(null);
     // Fetch posts on mount
     useEffect(() => {
         fetchPosts();
@@ -74,6 +71,44 @@ function Dashboard({ user, setUser }) {
         }
     };
 
+    const matchUser = async () => {
+        if(usersPair) {
+            alert(`User is already matched with:  ${localStorage.getItem("UserPair")}`);
+            console.log("User is already matched with: ", usersPair.partnerId);
+            return;
+        }
+        try {
+            const pair = await generateAndPublish();
+            if(!pair){
+                console.error("Error finding match");
+                return;
+            }
+            setUsersPair(pair);
+            localStorage.setItem("UserPair", pair.partnerId);
+            console.log("Successfully matched user with: ", pair.partnerId);
+
+        } catch (error) {
+            console.log("Couldn't match user: ", error);
+            throw error;
+        }
+    };
+
+    const unmatchUser = async () => {
+        try {
+            const response = await deleteMatchForUsers();
+
+            setUsersPair(null);
+            localStorage.removeItem("UserPair");
+            
+            alert("You have been unmatched successfully.");
+        }
+        catch (error) {
+            console.log("Failed unmatching user ", error);
+            throw error;
+        }
+        
+        
+    }
     return (
         <>
             <div>
@@ -88,6 +123,11 @@ function Dashboard({ user, setUser }) {
                             onClick={matchUser}>
                             Match Me!
                         </button>
+                        {usersPair && 
+                        <button className="unmatch-button"
+                                onClick={unmatchUser}>
+                            -Unmatch-
+                        </button>}
                         <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
                         <h4 style={{ color: "black", margin: "5px"}}>Your turn to respond</h4>
                         
