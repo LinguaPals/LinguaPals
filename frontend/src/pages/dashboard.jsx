@@ -4,6 +4,7 @@ import Card from '../components/card.jsx'
 import BottomBar from '../components/bottom_bar.jsx'
 import PostCard from '../components/PostCard.jsx'
 import { getPosts, createPost, deletePost, generateAndPublish, deleteMatchForUsers } from '../services/postService.js'
+import { getCurrentUser } from '../services/userService.js'
 
 
 function Dashboard({ user, setUser }) {
@@ -13,9 +14,34 @@ function Dashboard({ user, setUser }) {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
     const [usersPair, setUsersPair] = useState(null);
-    // Fetch posts on mount
+    const [userStats, setUserStats] = useState({ streakCount: 0, level: 0 });
+    const [statsLoading, setStatsLoading] = useState(true);
+    const [statsError, setStatsError] = useState(null);
+    const fetchUserStats = async () => {
+        try {
+            setStatsLoading(true);
+            setStatsError(null);
+            const response = await getCurrentUser();
+            if (response?.success && response?.data) {
+                setUserStats({
+                    streakCount: response.data.streakCount ?? 0,
+                    level: response.data.level ?? 0
+                });
+            } else {
+                setStatsError('Unable to load stats');
+            }
+        } catch (err) {
+            console.error(err);
+            setStatsError('Unable to load stats');
+        } finally {
+            setStatsLoading(false);
+        }
+    };
+
+    // Fetch data on mount
     useEffect(() => {
         fetchPosts();
+        fetchUserStats();
     }, []);
 
     const fetchPosts = async () => {
@@ -225,8 +251,16 @@ function Dashboard({ user, setUser }) {
                         </div>
                     </div>
                     <div className="right-cards">
-                        <Card title="Recent Matches" />
-                        <Card title="Learning Progress" />
+                        <Card
+                            title="Streaks"
+                            value={statsLoading ? '...' : statsError ? '--' : userStats.streakCount}
+                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Consecutive days active'}
+                        />
+                        <Card
+                            title="Level"
+                            value={statsLoading ? '...' : statsError ? '--' : userStats.level}
+                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Current proficiency tier'}
+                        />
                     </div>
                 </div>
             </div>
