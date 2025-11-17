@@ -1,7 +1,13 @@
-const Card = ({ title }) => {
+const Card = ({ title, value, footer }) => {
     return (
         <div className="card">
             <h2>{title}</h2>
+            {value !== undefined && (
+                <p style={{ fontSize: "28px", margin: "10px 0", color: "#2c3e50" }}>{value}</p>
+            )}
+            {footer && (
+                <span style={{ color: "#7f8c8d", fontSize: "14px" }}>{footer}</span>
+            )}
         </div>
     )
 }
