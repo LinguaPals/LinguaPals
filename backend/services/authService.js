@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import  User from '../models/userModel.js';
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 dotenv.config();
 
 export const signUp = async (req, res) => {
@@ -78,3 +80,49 @@ function validateEmail(email) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
 }
+
+async function findOrCreateGoogleUser(googleID, email) {
+    const existing = await User.findOne({ email: email });
+        if (existing) { 
+            if (!existing.googleID) {
+                existing.googleID = googleID;
+                await existing.save()
+            }
+            return existing;
+        }
+    
+    const user = new User({
+        googleID: googleID,          
+        email: email,
+        isNewGoogle: true 
+    });
+
+    const newUser = true;
+    await user.save();
+    return user;
+};
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:5050/api/auth/google/callback"
+  },
+  async function(accessToken, refreshToken, profile, cb) {
+    try {
+        const user = await findOrCreateGoogleUser(profile.id, profile.emails[0].value);
+        return cb(null, user);
+    } catch(err) {
+        return cb(err, null);
+    }
+  }
+));
+
+export const googleAuth = passport.authenticate('google', { 
+    scope: ['profile', 'email'], session: false 
+});
+
+export const googleAuthCallback = (req, res) => {
+    const token = jwt.sign({userID: req.user._id.toString()}, process.env.JWT_SECRET, { expiresIn: '1h'})
+
+    res.redirect(`http://localhost:5173/login?token=${token}&userID=${req.user._id.toString()}&isNew=${req.user.isNewGoogle}`);
+};

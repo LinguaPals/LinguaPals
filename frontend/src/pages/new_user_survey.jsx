@@ -18,7 +18,8 @@ function NewUserSurvey() {
         axios.put(`http://localhost:5050/api/users/${userID}`, {
             username: username,
             language: language,
-            proficiency: proficiency
+            proficiency: proficiency,
+            isNewGoogle: false
         })
         .then((response) => {
             console.log("Updated User:", response.data);
@@ -74,7 +75,6 @@ function NewUserSurvey() {
                      id="proficiency-level" 
                      value={proficiency}
                      onChange={(e) => setProficiency(e.target.value)} 
-                     style={{margin: "8px 0", padding: "6px" }}
                      className="survey-field"
                      >
                         <option value="">-- Select a level --</option>

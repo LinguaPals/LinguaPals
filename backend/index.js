@@ -11,14 +11,14 @@ import matchRoutes from "./routes/matches.js";
 import notifyRoutes from "./routes/notify.js";
 import requireAuth from "./middleware/requireAuth.js";
 import scheduler from "./startup/scheduler.js";
-
-
+import passport from "passport";
 
 dotenv.config({});
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
 mongoose.connect(process.env.ATLAS_URI).then(() => console.log("Connected to MongoDB.")).catch(e => console.error("MongoDB connection error:", e));
 

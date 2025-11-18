@@ -3,14 +3,32 @@ import EmailInput from "../components/email_button.jsx"
 import PasswordInput from "../components/password_button.jsx"
 import SignIn from "../components/signIn.jsx"
 import React from "react";
-import {useState} from 'react'
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios'
 
 function SignInPage (){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const token = params.get("token");
+        const userID = params.get("userID");
+        const isNew = params.get("isNew");
+
+        if (token) {
+            localStorage.setItem("token", token);
+            localStorage.setItem("userID", userID);
+            if (isNew === "true") {
+                navigate("/survey", { replace: true });
+            } else {
+                navigate("/dashboard", { replace: true });
+            }
+        }
+    }, [location, navigate]);
 
     const handleSubmit = () => {
         try {
@@ -33,19 +51,10 @@ function SignInPage (){
         }
     };
 
-    const signInWithGoogle = async () => {
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            const user = result.user;
-
-            navigate("/dashboard");
-            console.log("User Created with Google: ", user);
-        } catch(error) {
-            console.error("Sign in with Google error: ", error.code, error.message);
-        }
+    const signInWithGoogle = () => {
+        window.location.href = "http://localhost:5050/api/auth/google";
     };
+
 
     return (
         <>

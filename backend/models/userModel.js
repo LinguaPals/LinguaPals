@@ -5,7 +5,8 @@ const SALT_WORK_FACTOR = 10;
 
 var UserSchema = new Schema({
   email: { type: String, required: true, index: { unique: true } },
-  password: { type: String, required: true },
+  password: { type: String, required: false },
+  googleID: {type: String, required: false, default: null },
   username: { type: String, required: false },
   language: { type: String, required: false },
   proficiency: { type: String, required: false },
@@ -13,8 +14,9 @@ var UserSchema = new Schema({
   lastUploadDateId: { type: String, default: null },
   level: { type: Number, default: 0 },
   currentMatchId: { type: mongoose.Schema.Types.ObjectId, ref: "Match", default: null },
-  canMatch: {type: Boolean, required: false, default: null},
-  isMatched: {type: Boolean, required: false, default: false},
+  canMatch: { type: Boolean, required: false, default: null },
+  isMatched: { type: Boolean, required: false, default: false },
+  isNewGoogle: { type: Boolean, required: false, default: false }
 });
 
 UserSchema.pre("save", function (next) {
