@@ -14,6 +14,8 @@
     "firebase": "^12.4.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-media-recorder": "^1.7.2",
+    "react-record-webcam": "^1.1.5",
     "react-router-dom": "^7.9.4"
   },
   "devDependencies": {

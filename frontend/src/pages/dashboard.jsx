@@ -3,6 +3,7 @@ import TopBar from '../components/top_bar.jsx'
 import Card from '../components/card.jsx'
 import BottomBar from '../components/bottom_bar.jsx'
 import PostCard from '../components/PostCard.jsx'
+import RecordVideo from '../components/record.jsx'
 import { getPosts, createPost, deletePost, generateAndPublish, deleteMatchForUsers } from '../services/postService.js'
 import { getCurrentUser } from '../services/userService.js'
 
@@ -145,10 +146,14 @@ function Dashboard({ user, setUser }) {
                 <h1 className="logo">LinguaPals</h1>
                 <div className="dashboard-layout">
                     <div className="center-box">
+                        {!usersPair ? (
                         <button className="match-button"
-                            onClick={matchUser}>
-                            Match Me!
-                        </button>
+                        onClick={matchUser}>
+                        Match Me!
+                        </button> ) : (
+                            <RecordVideo />
+                        )}
+                        
                         {usersPair && 
                         <button className="unmatch-button"
                                 onClick={unmatchUser}>

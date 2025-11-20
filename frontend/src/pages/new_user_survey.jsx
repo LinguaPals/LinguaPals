@@ -7,6 +7,7 @@ function NewUserSurvey() {
     const [language, setLanguage] = useState("");
     const [proficiency, setProficiency] = useState("");
     const [username, setUsername] = useState("");
+    const [canMatch, setCanMatch] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -19,7 +20,8 @@ function NewUserSurvey() {
             username: username,
             language: language,
             proficiency: proficiency,
-            isNewGoogle: false
+            isNewGoogle: false,
+            canMatch: canMatch
         })
         .then((response) => {
             console.log("Updated User:", response.data);
@@ -85,8 +87,14 @@ function NewUserSurvey() {
                         <option value="b2">-- B2: Can interact with native speakers without exessive strain --</option>
                         <option value="c1">-- C1: Can express ideas fluently and spontaneously --</option>
                         <option value="c2">-- C2: Near pefect fluency --</option>
-                     </select>
-                     <button onClick={handleSubmit} type="submit">Submit</button>
+                    </select>
+                    <label htmlFor="canMatch">I am willing to be matched with other users</label>
+                    <input 
+                        type="checkbox"
+                        checked={canMatch}
+                        onChange={(e) => setCanMatch(e.target.checked)}
+                    />
+                    <button onClick={handleSubmit} type="submit">Submit</button>
                 </form>
             </div>
         </>
