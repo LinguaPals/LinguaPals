@@ -17,7 +17,8 @@ export const requestMatchForUser = async (userId, weekTag = getWeekTag()) => {
       await user.save()
     } else {
       const partnerId = String(match.userA) === String(userId) ? match.userB : match.userA
-      return { matched: true, matchId: match._id, partnerId }
+      const partner = await User.findById(partnerId);
+      return { matched: true, matchId: match._id, partnerId, partnerUsername: partner.username }
     }
   }
   const partner = await User.findOne({
@@ -31,12 +32,15 @@ export const requestMatchForUser = async (userId, weekTag = getWeekTag()) => {
     user.currentMatchId = match._id
     user.isMatched = true
     user.canMatch = false
+    user.partnerUsername = partner.username;
+    partner.partnerUsername = user.username;
     partner.currentMatchId = match._id
     partner.isMatched = true
     partner.canMatch = false
+    
     await user.save()
     await partner.save()
-    return { matched: true, matchId: match._id, partnerId: partner._id }
+    return { matched: true, matchId: match._id, partnerId: partner._id, partnerUsername: partner.username }
   }
   user.isMatched = false
   user.currentMatchId = null
@@ -104,6 +108,7 @@ export const deleteMatchForUser = async (userId, weekTag = getWeekTag()) => {
     user.isMatched = false
     user.currentMatchId = null
     user.canMatch = false
+    user.partnerUsername = null
     await user.save()
     return { success: false, message: "No match found" }
   }
@@ -111,11 +116,13 @@ export const deleteMatchForUser = async (userId, weekTag = getWeekTag()) => {
   const partner = await User.findById(partnerId)
   user.isMatched = false
   user.currentMatchId = null
-  user.canMatch = false
+  user.canMatch = true
+  user.partnerUsername = null
   if (partner) {
     partner.isMatched = false
     partner.currentMatchId = null
-    partner.canMatch = false
+    partner.canMatch = true
+    partner.partnerUsername = null
     await partner.save()
   }
   await user.save()

@@ -4,7 +4,7 @@ import Card from '../components/card.jsx'
 import BottomBar from '../components/bottom_bar.jsx'
 import PostCard from '../components/PostCard.jsx'
 import RecordVideo from '../components/record.jsx'
-import { getPosts, createPost, deletePost, generateAndPublish, deleteMatchForUsers } from '../services/postService.js'
+import { getPosts, createPost, deletePost, requestMatch, deleteMatchForUsers } from '../services/postService.js'
 import { getCurrentUser } from '../services/userService.js'
 
 
@@ -24,10 +24,14 @@ function Dashboard({ user, setUser }) {
             setStatsError(null);
             const response = await getCurrentUser();
             if (response?.success && response?.data) {
+                console.log("Successfully retrieved user info");
                 setUserStats({
                     streakCount: response.data.streakCount ?? 0,
                     level: response.data.level ?? 0
                 });
+                //set users pair
+                console.log("Partner Username: ", response.data.partnerUsername);
+                setUsersPair(response.data.partnerUsername);
             } else {
                 setStatsError('Unable to load stats');
             }
@@ -38,6 +42,8 @@ function Dashboard({ user, setUser }) {
             setStatsLoading(false);
         }
     };
+
+
 
     // Fetch data on mount
     useEffect(() => {
@@ -100,19 +106,18 @@ function Dashboard({ user, setUser }) {
 
     const matchUser = async () => {
         if(usersPair) {
-            alert(`User is already matched with:  ${localStorage.getItem("UserPair")}`);
-            console.log("User is already matched with: ", usersPair.partnerId);
+            alert(`User is already matched`);
             return;
         }
         try {
-            const pair = await generateAndPublish();
+            const pair = await requestMatch();
             if(!pair){
                 console.error("Error finding match");
                 return;
             }
-            setUsersPair(pair);
-            localStorage.setItem("UserPair", pair.partnerId);
-            console.log("Successfully matched user with: ", pair.partnerId);
+            console.log("Partner username", pair.data.partnerUsername);
+            setUsersPair(pair.data.partnerUsername);
+            console.log("Successfully matched user");
 
         } catch (error) {
             console.log("Couldn't match user: ", error);
@@ -125,16 +130,12 @@ function Dashboard({ user, setUser }) {
             const response = await deleteMatchForUsers();
 
             setUsersPair(null);
-            localStorage.removeItem("UserPair");
-            
             alert("You have been unmatched successfully.");
         }
         catch (error) {
             console.log("Failed unmatching user ", error);
             throw error;
         }
-        
-        
     }
     return (
         <>
@@ -151,14 +152,15 @@ function Dashboard({ user, setUser }) {
                         onClick={matchUser}>
                         Match Me!
                         </button> ) : (
+                        <>
+                            <h2 style={{color:"black"}}>You're matched with {usersPair}!</h2>
                             <RecordVideo />
+                            <button className="unmatch-button"
+                                    onClick={unmatchUser}>
+                                -Unmatch-
+                            </button>
+                        </>       
                         )}
-                        
-                        {usersPair && 
-                        <button className="unmatch-button"
-                                onClick={unmatchUser}>
-                            -Unmatch-
-                        </button>}
                         <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
                         <h4 style={{ color: "black", margin: "5px"}}>Your turn to respond</h4>
                         

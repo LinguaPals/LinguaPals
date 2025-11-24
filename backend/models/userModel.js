@@ -16,7 +16,8 @@ var UserSchema = new Schema({
   currentMatchId: { type: mongoose.Schema.Types.ObjectId, ref: "Match", default: null },
   canMatch: { type: Boolean, required: false, default: null },
   isMatched: { type: Boolean, required: false, default: false },
-  isNewGoogle: { type: Boolean, required: false, default: false }
+  isNewGoogle: { type: Boolean, required: false, default: false },
+  partnerUsername: {type: String, required: false, default: null }
 });
 
 UserSchema.pre("save", function (next) {

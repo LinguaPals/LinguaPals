@@ -11,9 +11,9 @@ const getAuthHeaders = () => {
   };
 };
 
-export const generateAndPublish = async () => {
+export const requestMatch = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/matches/publish`,{}, {
+    const response = await axios.post(`${API_BASE_URL}/matches/request`,{}, {
       headers: getAuthHeaders()
     });
     return response.data;
