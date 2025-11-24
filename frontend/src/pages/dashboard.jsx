@@ -15,7 +15,7 @@ function Dashboard({ user, setUser }) {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
     const [usersPair, setUsersPair] = useState(null);
-    const [userStats, setUserStats] = useState({ streakCount: 0, level: 0 });
+    const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, username: null });
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
     const fetchUserStats = async () => {
@@ -27,7 +27,8 @@ function Dashboard({ user, setUser }) {
                 console.log("Successfully retrieved user info");
                 setUserStats({
                     streakCount: response.data.streakCount ?? 0,
-                    level: response.data.level ?? 0
+                    level: response.data.level ?? 0,
+                    username: response.data.username ?? null
                 });
                 //set users pair
                 console.log("Partner Username: ", response.data.partnerUsername);
@@ -140,7 +141,7 @@ function Dashboard({ user, setUser }) {
     return (
         <>
             <div>
-                <TopBar user_auth={user} setUser={setUser}/>
+                <TopBar username={userStats.username} user_auth={user} setUser={setUser}/>
             </div>
 
             <div className="content">
