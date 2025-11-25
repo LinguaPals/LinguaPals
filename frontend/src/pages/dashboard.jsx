@@ -4,9 +4,10 @@ import Card from '../components/card.jsx'
 import BottomBar from '../components/bottom_bar.jsx'
 import PostCard from '../components/PostCard.jsx'
 import RecordVideo from '../components/record.jsx'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import { getPosts, createPost, deletePost, requestMatch, deleteMatchForUsers } from '../services/postService.js'
 import { getCurrentUser } from '../services/userService.js'
-
 
 function Dashboard({ user, setUser }) {
     const [posts, setPosts] = useState([]);
@@ -44,8 +45,6 @@ function Dashboard({ user, setUser }) {
             setStatsLoading(false);
         }
     };
-
-
 
     // Fetch data on mount
     useEffect(() => {
@@ -87,6 +86,10 @@ function Dashboard({ user, setUser }) {
                 setPosts([response.data, ...posts]);
                 setNewPost({ title: '', description: '' });
                 setShowCreateForm(false);
+                // Update level if returned from backend
+                if (response.user?.level !== undefined) {
+                    setUserStats(prev => ({ ...prev, level: response.user.level }));
+                }
             }
         } catch (err) {
             alert('Failed to create post');
@@ -109,6 +112,10 @@ function Dashboard({ user, setUser }) {
                 setPosts([response.data, ...posts]);
                 setShowRecorder(false);
                 alert('Video post created successfully!');
+                // Update level if returned from backend
+                if (response.user?.level !== undefined) {
+                    setUserStats(prev => ({ ...prev, level: response.user.level }));
+                }
             }
         } catch (err) {
             alert('Failed to create video post');
@@ -233,20 +240,26 @@ function Dashboard({ user, setUser }) {
                     </div>
                     <div className="right-cards">
                         <Card
-                            title="Streaks"
+                            title="Streak"
                             value={statsLoading ? '...' : statsError ? '--' : userStats.streakCount}
                             footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Consecutive days active'}
                         />
                         <Card
                             title="Level"
-                            value={statsLoading ? '...' : statsError ? '--' : userStats.level}
-                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Current proficiency tier'}
+                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Number of videos posted'}
+                            children={<div style={{width: "33%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto"}}><CircularProgressbar
+                                value={userStats.level}
+                                text={userStats.level}
+                                styles={buildStyles({
+                                    pathColor: 'rgb(166,192,94)',
+                                    textColor: '#333',
+                                    trailColor: '#d6d6d6'
+                                })}/></div>}
                         />
                     </div>
                 </div>
             </div>
             <BottomBar />
-
         </>
     )
 }

@@ -118,17 +118,11 @@ body {
   padding: 25px;
   border-radius: 30px;
   background-color: #ffffff;
-  border: 1px solid #cccccc;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
 }
 
 .turn-to-respond {
   color: green;
-}
-
-.right-cards .card:hover {
-  transform: translateY(-5px);
 }
 
 .card h2, .left-card h2 {
@@ -139,7 +133,7 @@ body {
 
 .center-box { 
   width: 450px;
-  height: 550px;
+  height: 560px;
   border-radius: 30px;
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -305,9 +299,9 @@ select:hover{
 
 .main-box{
   background-color: #ffffff;
-  border: 2px solid #ededed;
-  padding: 12px;
-  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 20px;
+  border-radius: 30px;
 }
 .loginButtons{
   display: flex;

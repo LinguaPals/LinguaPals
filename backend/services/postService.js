@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Post from "../models/postModel.js";
+import User from "../models/userModel.js";
 import { createVideoPost } from "./videoService.js";
 
 export const getPosts = async (req, res) => {
@@ -15,13 +16,31 @@ export const createPost = async (req, res) => {
   try {
     const payload = req.body;
     if (!payload) return res.status(400).json({ success: false, message: "Missing request body" });
+
+    let post;
     if (payload.type === "video") {
-      const post = await createVideoPost({ userId: req.userId, body: payload });
-      return res.status(201).json({ success: true, data: post });
+      post = await createVideoPost({ userId: req.userId, body: payload });
+    } else {
+      post = new Post(payload);
+      await post.save();
     }
-    const post = new Post(payload);
-    await post.save();
-    res.status(201).json({ success: true, data: post });
+
+    // Increment user level every time a post is created
+    if (req.userId) {
+      try {
+        const updatedUser = await User.findByIdAndUpdate(
+          req.userId,
+          { $inc: { level: 1 } },
+          { new: true, select: "level" }
+        );
+        return res.status(201).json({ success: true, data: post, user: { level: updatedUser?.level } });
+      } catch (incErr) {
+        // If increment fails, still return post
+        return res.status(201).json({ success: true, data: post, warning: "Post created but level not incremented" });
+      }
+    }
+
+    return res.status(201).json({ success: true, data: post });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
   }
