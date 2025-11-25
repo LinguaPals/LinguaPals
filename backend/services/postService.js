@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Post from "../models/postModel.js";
+import User from "../models/userModel.js";
 import { createVideoPost } from "./videoService.js";
+import { getDateId } from "../utils/dateIds.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -21,6 +23,16 @@ export const createPost = async (req, res) => {
     }
     const post = new Post(payload);
     await post.save();
+
+    // Update streak for non-video posts: only increment once per day
+    const dateId = payload.dateId || getDateId();
+    const user = await User.findById(req.userId);
+    if (user && user.lastUploadDateId !== dateId) {
+      user.streakCount = (user.streakCount || 0) + 1;
+      user.lastUploadDateId = dateId;
+      await user.save();
+    }
+
     res.status(201).json({ success: true, data: post });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });

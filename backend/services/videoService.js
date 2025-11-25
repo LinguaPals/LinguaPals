@@ -1,4 +1,5 @@
 import Post from "../models/postModel.js";
+import User from "../models/userModel.js";
 import storage from "../lib/storage/mongoBlobStorage.js";
 import { emit } from "../lib/events.js";
 import { getDateId, getWeekTag } from "../utils/dateIds.js";
@@ -21,6 +22,15 @@ export const createVideoPost = async ({ userId, body }) => {
     expiresAt: body.expiresAt || null
   });
   await post.save();
+
+  // Update streak: only increment once per day
+  const user = await User.findById(userId);
+  if (user && user.lastUploadDateId !== dateId) {
+    user.streakCount = (user.streakCount || 0) + 1;
+    user.lastUploadDateId = dateId;
+    await user.save();
+  }
+
   emit("VIDEO_UPLOADED", { userId, post });
   return post;
 };
