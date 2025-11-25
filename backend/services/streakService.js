@@ -43,14 +43,14 @@ export const updateStreak = async (userId, currentDateId) => {
   } else {
     const daysDiff = getDaysDifference(lastDateId, currentDateId);
     
-    if (daysDiff === 1) {
+    if (daysDiff === null) {
+      // Invalid date format - treat as first post
+      newStreakCount = 1;
+    } else if (daysDiff === 1) {
       // Consecutive day - increment streak
       newStreakCount = user.streakCount + 1;
-    } else if (daysDiff === 0) {
-      // Same day (shouldn't reach here due to earlier check)
-      newStreakCount = user.streakCount;
     } else {
-      // Missed one or more days - reset streak to 1
+      // Missed one or more days or same day (edge case) - reset streak to 1
       newStreakCount = 1;
     }
   }
