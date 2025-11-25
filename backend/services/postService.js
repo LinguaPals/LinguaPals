@@ -1,10 +1,30 @@
 import mongoose from "mongoose";
 import Post from "../models/postModel.js";
+import User from "../models/userModel.js";
 import { createVideoPost } from "./videoService.js";
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find({}).sort({ createdAt: -1 });
+    const userId = req.userId;
+    const user = await User.findById(userId).lean();
+    
+    // Build query to only get posts from user and their matched partner
+    let query;
+    
+    if (user && user.currentMatchId) {
+      // If user has a match, get posts from user or from the same match
+      query = {
+        $or: [
+          { userId },
+          { matchId: user.currentMatchId }
+        ]
+      };
+    } else {
+      // If no match, only get user's own posts
+      query = { userId };
+    }
+    
+    const posts = await Post.find(query).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: posts });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
@@ -29,7 +49,15 @@ export const createPost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
   try {
-    await Post.findByIdAndDelete(req.params.id);
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+    
+    // Only allow user to delete their own posts
+    if (String(post.userId) !== String(req.userId)) {
+      return res.status(403).json({ success: false, message: "Not authorized to delete this post" });
+    }
+    
+    await post.deleteOne();
     res.status(200).json({ success: true, message: "Post deleted" });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
@@ -38,8 +66,17 @@ export const deletePost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
   try {
-    const updated = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.status(200).json({ success: true, data: updated });
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+    
+    // Only allow user to update their own posts
+    if (String(post.userId) !== String(req.userId)) {
+      return res.status(403).json({ success: false, message: "Not authorized to update this post" });
+    }
+    
+    Object.assign(post, req.body);
+    await post.save();
+    res.status(200).json({ success: true, data: post });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
   }
@@ -69,6 +106,16 @@ export const playPost = async (req, res) => {
   try {
     const doc = await Post.findById(req.params.id);
     if (!doc) return res.status(404).json({ success: false, message: "Post not found" });
+    
+    // Verify user can access this post (own post or matched partner's post)
+    const user = await User.findById(req.userId).lean();
+    const isOwnPost = String(doc.userId) === String(req.userId);
+    const isMatchedPost = user && user.currentMatchId && String(doc.matchId) === String(user.currentMatchId);
+    
+    if (!isOwnPost && !isMatchedPost) {
+      return res.status(403).json({ success: false, message: "Not authorized to view this post" });
+    }
+    
     return res.status(200).json({ success: true, data: { id: doc._id, storage: doc.storage, media: doc.media, status: doc.status } });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
