@@ -13,6 +13,7 @@ function Dashboard({ user, setUser }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [showRecorder, setShowRecorder] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
     const [usersPair, setUsersPair] = useState(null);
     const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, username: null });
@@ -93,6 +94,28 @@ function Dashboard({ user, setUser }) {
         }
     };
 
+    const handleVideoSubmit = async (videoBlob, title) => {
+        try {
+            // For now, create a post with the title and a placeholder for video
+            // You can upload the video to your backend/storage service here
+            const response = await createPost({
+                title: title,
+                description: 'Video post',
+                userId: localStorage.getItem('userID'),
+                // videoBlob can be uploaded to backend or cloud storage
+            });
+            
+            if (response.success) {
+                setPosts([response.data, ...posts]);
+                setShowRecorder(false);
+                alert('Video post created successfully!');
+            }
+        } catch (err) {
+            alert('Failed to create video post');
+            console.error(err);
+        }
+    };
+
     const handleDeletePost = async (postId) => {
         if (!confirm('Are you sure you want to delete this post?')) return;
         
@@ -155,7 +178,6 @@ function Dashboard({ user, setUser }) {
                         </button> ) : (
                         <>
                             <h2 style={{color:"black"}}>You're matched with {usersPair}!</h2>
-                            <RecordVideo />
                             <button className="unmatch-button"
                                     onClick={unmatchUser}>
                                 -Unmatch-
@@ -170,7 +192,7 @@ function Dashboard({ user, setUser }) {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                                 <h3 style={{ margin: 0, color: 'black' }}>Recent Posts</h3>
                                 <button 
-                                    onClick={() => setShowCreateForm(!showCreateForm)}
+                                    onClick={() => setShowRecorder(!showRecorder)}
                                     style={{
                                         background: '#4CAF50',
                                         color: 'white',
@@ -180,62 +202,13 @@ function Dashboard({ user, setUser }) {
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    {showCreateForm ? 'Cancel' : '+ New Post'}
+                                    {showRecorder ? 'Cancel' : '+ New Post'}
                                 </button>
                             </div>
 
-                            {/* Create Post Form */}
-                            {showCreateForm && (
-                                <form onSubmit={handleCreatePost} style={{
-                                    background: '#f5f5f5',
-                                    padding: '15px',
-                                    borderRadius: '8px',
-                                    marginBottom: '15px'
-                                }}>
-                                    <input
-                                        type="text"
-                                        placeholder="Post Title"
-                                        value={newPost.title}
-                                        onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                                        style={{
-                                            width: '100%',
-                                            padding: '10px',
-                                            marginBottom: '10px',
-                                            border: '1px solid #ddd',
-                                            borderRadius: '4px',
-                                            boxSizing: 'border-box'
-                                        }}
-                                    />
-                                    <textarea
-                                        placeholder="Post Description"
-                                        value={newPost.description}
-                                        onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
-                                        rows="3"
-                                        style={{
-                                            width: '100%',
-                                            padding: '10px',
-                                            marginBottom: '10px',
-                                            border: '1px solid #ddd',
-                                            borderRadius: '4px',
-                                            boxSizing: 'border-box',
-                                            resize: 'vertical'
-                                        }}
-                                    />
-                                    <button 
-                                        type="submit"
-                                        style={{
-                                            background: '#2196F3',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            padding: '10px 20px',
-                                            cursor: 'pointer',
-                                            width: '100%'
-                                        }}
-                                    >
-                                        Create Post
-                                    </button>
-                                </form>
+                            {/* Video Recorder */}
+                            {showRecorder && (
+                                <RecordVideo onVideoSubmit={handleVideoSubmit} />
                             )}
 
                             {/* Posts List */}

@@ -102,20 +102,34 @@ async function findOrCreateGoogleUser(googleID, email) {
     return user;
 };
 
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5050/api/auth/google/callback"
-  },
-  async function(accessToken, refreshToken, profile, cb) {
-    try {
-        const user = await findOrCreateGoogleUser(profile.id, profile.emails[0].value);
-        return cb(null, user);
-    } catch(err) {
-        return cb(err, null);
+// Initialize passport strategy - wrapped in function to ensure env vars are loaded
+const initializeGoogleStrategy = () => {
+    const clientID = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    
+    if (!clientID || !clientSecret) {
+        console.error('Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET in environment variables');
+        return;
     }
-  }
-));
+
+    passport.use(new GoogleStrategy({
+        clientID: clientID,
+        clientSecret: clientSecret,
+        callbackURL: "http://localhost:5050/api/auth/google/callback"
+      },
+      async function(accessToken, refreshToken, profile, cb) {
+        try {
+            const user = await findOrCreateGoogleUser(profile.id, profile.emails[0].value);
+            return cb(null, user);
+        } catch(err) {
+            return cb(err, null);
+        }
+      }
+    ));
+};
+
+// Call initialization immediately
+initializeGoogleStrategy();
 
 export const googleAuth = passport.authenticate('google', { 
     scope: ['profile', 'email'], session: false 
