@@ -33,3 +33,15 @@ export const updateUserProfile = async (userId, updates) => {
     throw error;
   }
 };
+
+export const getUserStreak = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/streak`, {
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user streak:', error);
+    throw error;
+  }
+};

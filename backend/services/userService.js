@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { getStreakInfo } from "./streakService.js";
 
 export const updateUser = async (req, res) => {
   try {
@@ -16,6 +17,16 @@ export const getCurrentUser = async (req, res) => {
     const user = await User.findById(req.userId).select("-password");
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
     return res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const getUserStreak = async (req, res) => {
+  try {
+    if (!req.userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+    const streakInfo = await getStreakInfo(req.userId);
+    return res.status(200).json({ success: true, data: streakInfo });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Server Error" });
   }

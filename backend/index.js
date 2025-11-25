@@ -12,6 +12,7 @@ import notifyRoutes from "./routes/notify.js";
 import requireAuth from "./middleware/requireAuth.js";
 import scheduler from "./startup/scheduler.js";
 import passport from "passport";
+import { initStreakEvents } from "./services/streakService.js";
 
 dotenv.config({});
 
@@ -31,5 +32,6 @@ app.use("/api/notify", notifyRoutes);
 
 
 scheduler();
+initStreakEvents();
 
 app.listen(process.env.PORT, () => console.log(`Server running on http://localhost:${process.env.PORT}`));
