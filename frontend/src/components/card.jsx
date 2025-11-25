@@ -1,18 +1,17 @@
-const Card = ({ title, value, footer, children }) => {
+const Card = ({ title, children, footer }) => {
     return (
         <div className="card">
-            <h2>{title}</h2>
-            {value !== undefined && (
-                <p style={{ fontSize: "28px", margin: "10px 0", color: "#2c3e50" }}>{value}</p>
-            )}
-            {children && (
-                <div style={{ margin: "10px 0" }}>
-                    {children}
-                </div>
-            )}
-            {footer && (
-                <span style={{ color: "#7f8c8d", fontSize: "14px" }}>{footer}</span>
-            )}
+            <div className="card-title">
+                <h2>{title}</h2>
+            </div>
+            <div className="card-content">
+                {children}
+            </div>
+            <div className="card-footer">
+                {footer && (
+                    <span style={{ color: "#7f8c8d", fontSize: "14px" }}>{footer}</span>
+                )}
+            </div>
         </div>
     )
 }

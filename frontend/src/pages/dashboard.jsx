@@ -192,7 +192,6 @@ function Dashboard({ user, setUser }) {
                         </>       
                         )}
                         <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
-                        <h4 style={{ color: "black", margin: "5px"}}>Your turn to respond</h4>
                         
                         {/* Posts Section */}
                         <div style={{ marginTop: '20px', width: '100%' }}>
@@ -241,8 +240,30 @@ function Dashboard({ user, setUser }) {
                     <div className="right-cards">
                         <Card
                             title="Streak"
-                            value={statsLoading ? '...' : statsError ? '--' : userStats.streakCount}
                             footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Consecutive days active'}
+                            children={<div style={{ position: "relative", display: "inline-block" }}>
+                                <span style={{ fontSize: "50px" }}>🔥</span>
+
+                                <div style={{
+                                    position: "absolute",
+                                    bottom: -5,
+                                    right: -10,
+                                    width: "28px",
+                                    height: "28px",
+                                    background: "#ff5722",
+                                    color: "white",
+                                    borderRadius: "50%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontWeight: "bold",
+                                    fontSize: "14px",
+                                    border: "2px solid white"
+                                }}>
+                                    {userStats.streakCount}
+                                </div>
+                                </div>
+                            }
                         />
                         <Card
                             title="Level"
@@ -254,14 +275,14 @@ function Dashboard({ user, setUser }) {
                                     pathColor: 'rgb(166,192,94)',
                                     textColor: '#333',
                                     trailColor: '#d6d6d6'
-                                })}/></div>}
+                                })}/></div>
+                            }
                         />
                     </div>
                 </div>
             </div>
-            <BottomBar />
-        </>
-    )
-}
+        <BottomBar />
+    </>
+)}
 export default Dashboard;
 

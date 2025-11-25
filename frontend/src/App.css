@@ -44,6 +44,7 @@ body {
   height: 60px;
   border-bottom: 1px solid #555555;
   background-color: var(--top-bar-color);
+  z-index: 1000;
 }
 #welcome-user {
   font-size: 20px;
@@ -119,6 +120,29 @@ body {
   border-radius: 30px;
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  flex: 0 0 25%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.card-content {
+  flex: 0 0 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-footer {
+  flex: 0 0 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .turn-to-respond {
@@ -255,6 +279,12 @@ select:hover{
   justify-content: space-around;
 }
 
+/* Consistent size for stat circles (streak/level) */
+.stat-circle {
+  width: 100px;
+  height: 100px;
+}
+
 #h2 {
   color: green;
 }
@@ -343,9 +373,11 @@ select:hover{
 
 .google-icon {
   display: block;
-  width: 140px;
+  width: 205px;
+  height: 50px;
   padding: 0;
   background: transparent;
+  object-fit: contain;
 }
 
 /* ============Landing Page========== */
@@ -531,7 +563,13 @@ select:hover{
 .or-separator hr{flex:1;border:none;border-top:1px solid #ddd}
 .or-separator span{margin:0 10px;color:#888}
 
-#google-icon{width: 150px;padding:0;background:transparent}
+#google-icon{
+  width: 205px;
+  height: 50px;
+  padding: 0;
+  background: transparent;
+  object-fit: contain;
+}
 
 .debug-button{margin-top:8px}
 
