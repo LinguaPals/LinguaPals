@@ -9,15 +9,19 @@ export const getPosts = async (req, res) => {
     const user = await User.findById(userId).lean();
     
     // Build query to only get posts from user and their matched partner
-    const query = { userId };
+    let query;
     
     if (user && user.currentMatchId) {
-      // If user has a match, also get posts from the same match
-      query.$or = [
-        { userId },
-        { matchId: user.currentMatchId }
-      ];
-      delete query.userId;
+      // If user has a match, get posts from user or from the same match
+      query = {
+        $or: [
+          { userId },
+          { matchId: user.currentMatchId }
+        ]
+      };
+    } else {
+      // If no match, only get user's own posts
+      query = { userId };
     }
     
     const posts = await Post.find(query).sort({ createdAt: -1 });
@@ -53,7 +57,7 @@ export const deletePost = async (req, res) => {
       return res.status(403).json({ success: false, message: "Not authorized to delete this post" });
     }
     
-    await Post.findByIdAndDelete(req.params.id);
+    await post.deleteOne();
     res.status(200).json({ success: true, message: "Post deleted" });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
@@ -70,8 +74,9 @@ export const updatePost = async (req, res) => {
       return res.status(403).json({ success: false, message: "Not authorized to update this post" });
     }
     
-    const updated = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.status(200).json({ success: true, data: updated });
+    Object.assign(post, req.body);
+    await post.save();
+    res.status(200).json({ success: true, data: post });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
   }
