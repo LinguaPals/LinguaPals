@@ -2,7 +2,7 @@ import CompanyLogo from "/src/images/temporary_logo.jpeg"
 import ProfileImg from "/src/images/profile.png"
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom'
-const TopBar = ({ username }) => {
+const TopBar = ({ username, onLogout }) => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     const toggleDropdown = () => {
@@ -13,6 +13,7 @@ const TopBar = ({ username }) => {
         // where dropdown click logic goes
         setIsOpen(false);
         if (option === 'Log Out') {
+            onLogout?.();
             localStorage.removeItem("token");
             navigate('/login');
         }

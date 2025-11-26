@@ -37,15 +37,14 @@ export const getMatchForUsers = async () => {
 };
 
 export const deleteMatchForUsers = async () => {
-  axios.delete(`${API_BASE_URL}/matches/delete-match`, { headers: getAuthHeaders() })
-  .then(response => {
-    console.log("Deleted successfully");
-    return response.data;
-  })
-  .catch(error => {
-    console.log("Error deleting match", error);
-    throw error;
-  });
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/matches/delete-match`, { headers: getAuthHeaders() })
+    console.log("Deleted successfully")
+    return response.data
+  } catch (error) {
+    console.log("Error deleting match", error)
+    throw error
+  }
 }
 
 // Get all posts
