@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import { createVideoPost } from "./videoService.js";
+import { handleSuccessfulPost } from "./progressService.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -40,18 +41,26 @@ export const createPost = async (req, res) => {
       await post.save();
     }
 
-    // Increment user level every time a post is created
+    // Handle streak and level progression after successful post creation
     if (req.userId) {
       try {
-        const updatedUser = await User.findByIdAndUpdate(
-          req.userId,
-          { $inc: { level: 1 } },
-          { new: true, select: "level" }
-        );
-        return res.status(201).json({ success: true, data: post, user: { level: updatedUser?.level } });
-      } catch (incErr) {
-        // If increment fails, still return post
-        return res.status(201).json({ success: true, data: post, warning: "Post created but level not incremented" });
+        const progressData = await handleSuccessfulPost(req.userId);
+        return res.status(201).json({ 
+          success: true, 
+          data: post, 
+          user: { 
+            level: progressData.level,
+            streakCount: progressData.streakCount
+          } 
+        });
+      } catch (progressErr) {
+        // If progress update fails, still return post (graceful degradation)
+        console.error("Progress update failed:", progressErr);
+        return res.status(201).json({ 
+          success: true, 
+          data: post, 
+          warning: "Post created but progress not updated" 
+        });
       }
     }
 

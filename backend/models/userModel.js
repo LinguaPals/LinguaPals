@@ -13,6 +13,7 @@ var UserSchema = new Schema({
   streakCount: { type: Number, default: 0 },
   lastUploadDateId: { type: String, default: null },
   level: { type: Number, default: 0 },
+  postedToday: { type: Boolean, required: false, default: false },
   currentMatchId: { type: mongoose.Schema.Types.ObjectId, ref: "Match", default: null },
   canMatch: { type: Boolean, required: false, default: null },
   isMatched: { type: Boolean, required: false, default: false },
