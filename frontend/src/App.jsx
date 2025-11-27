@@ -10,6 +10,8 @@ import LandingPage from './pages/landing_page.jsx'
 
 
 function App() {
+    const [user, setUser] = useState(null);
+
     return (
        <Router>
             <Routes>
@@ -18,7 +20,7 @@ function App() {
                 <Route path="/login" element={<LogInPage />} />
                 <Route path="/signup" element={<SignInPage />} />
                 <Route element={<ProtectedRoutes/>}>
-                    <Route path="/dashboard" element={<Dashboard/>} />
+                    <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} />} />
                     <Route path="/survey" element={<NewUserSurvey/>} /> 
                 </Route>
                 <Route path="*" element={<Navigate to="/" replace />} />

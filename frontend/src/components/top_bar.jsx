@@ -15,6 +15,9 @@ const TopBar = ({ username, onLogout }) => {
         if (option === 'Log Out') {
             onLogout?.();
             localStorage.removeItem("token");
+            localStorage.removeItem("username");
+            localStorage.removeItem("userID");
+
             navigate('/login');
         }
         console.log('Selected option:', option);

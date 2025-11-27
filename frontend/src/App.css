@@ -59,6 +59,7 @@ body {
   margin: 0px;
   height: 70px;
   width: 100px;
+  border-radius: 20px;
   border: 1px solid white;
   background-color: grey;
   border-style:groove;
@@ -196,8 +197,8 @@ body {
 
 .survey-field {
   background-color: #ffffff;
-  border-color: var(--gold);
   color: black;
+  border-radius: 5px;
 }
 
 select:hover{
