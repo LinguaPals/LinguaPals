@@ -223,6 +223,17 @@ body {
   text-align:center;
 }
 
+#record-video-button {
+  background-color: red;
+  margin: 5px;
+  border-radius: 30px;
+
+}
+
+#record-video-button:hover {
+  transform: scale(1.05);
+  border: 2px dashed black;
+}
 
 .survey-field {
   background-color: #ffffff;

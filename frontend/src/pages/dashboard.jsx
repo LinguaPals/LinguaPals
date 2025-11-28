@@ -275,15 +275,8 @@ function Dashboard({ user, setUser }) {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                                 <h3 style={{ margin: 0, color: 'black' }}>Recent Video Posts</h3>
                                 <button 
+                                    id="record-video-button"
                                     onClick={matchState.partnerUsername ? () => setShowRecorder(prev => !prev) : () => window.alert("Please create a match before posting.")}
-                                    style={{
-                                        background: '#4CAF50',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        padding: '8px 16px',
-                                        cursor: 'pointer'
-                                    }}
                                 >
                                     + New Video Post
                                 </button>

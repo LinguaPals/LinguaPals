@@ -145,20 +145,11 @@ function RecordVideo({ onVideoSubmit, onClose }) {
     const handleVideoSubmit = (videoBlob, title) => {
         onVideoSubmit?.(videoBlob, title);
     };
-    return (
-        <div>
-            {showRecorder && (
-                <Record 
-                    onClose={() => setShowRecorder(false)} 
-                    onSubmit={handleVideoSubmit}
-                />
-            )}
-            {!showRecorder && (
-                <button onClick={() => setShowRecorder(true)}>
-                    Record Video
-                </button>
-            )}
-        </div>
+    return(
+         <Record
+            onClose={onClose}
+            onSubmit={handleVideoSubmit}
+        />
     )
 }
 
