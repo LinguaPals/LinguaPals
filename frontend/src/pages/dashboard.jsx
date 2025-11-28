@@ -162,7 +162,6 @@ function Dashboard({ user, setUser }) {
             
             if (response.success) {
                 setPosts([response.data, ...posts]);
-                setShowRecorder(false);
                 alert('Video post created successfully!');
                 // Update level if returned from backend
                 if (response.user?.level !== undefined) {
@@ -237,7 +236,6 @@ function Dashboard({ user, setUser }) {
             </div>
 
             <div className="content">
-                <h1 className="logo">LinguaPals</h1>
                 <div className="dashboard-layout">
                     <div className="center-box">
                         {!matchState.partnerUsername ? (
@@ -304,14 +302,14 @@ function Dashboard({ user, setUser }) {
                             title="Streak"
                             footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Consecutive days active'}
                             children={<div style={{ position: "relative", display: "inline-block" }}>
-                                <span style={{ fontSize: "50px" }}>🔥</span>
+                                <span style={{ fontSize: "75px" }}>🔥</span>
 
                                 <div style={{
                                     position: "absolute",
-                                    bottom: -5,
-                                    right: -10,
-                                    width: "28px",
-                                    height: "28px",
+                                    bottom: 0,
+                                    right: 5,
+                                    width: "35px",
+                                    height: "35px",
                                     background: "#ff5722",
                                     color: "white",
                                     borderRadius: "50%",
@@ -319,7 +317,7 @@ function Dashboard({ user, setUser }) {
                                     alignItems: "center",
                                     justifyContent: "center",
                                     fontWeight: "bold",
-                                    fontSize: "14px",
+                                    fontSize: "18px",
                                     border: "2px solid white"
                                 }}>
                                     {userStats.streakCount}
@@ -329,8 +327,8 @@ function Dashboard({ user, setUser }) {
                         />
                         <Card
                             title="Level"
-                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Number of videos posted'}
-                            children={<div style={{width: "33%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto"}}><CircularProgressbar
+                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Number of 5-day streaks accumulated'}
+                            children={<div style={{width: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto"}}><CircularProgressbar
                                 value={userStats.level}
                                 text={userStats.level}
                                 styles={buildStyles({
@@ -343,7 +341,6 @@ function Dashboard({ user, setUser }) {
                     </div>
                 </div>
             </div>
-        <BottomBar />
     </>
 )}
 export default Dashboard;

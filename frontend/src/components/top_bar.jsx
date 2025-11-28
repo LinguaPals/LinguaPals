@@ -27,22 +27,27 @@ const TopBar = ({ username, onLogout }) => {
     
     return (
         <div className="top-bar">
-            <img src={CompanyLogo} className="top-bar-img" />
+            <div style={{display: "flex"}}>
+                <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}><img src={CompanyLogo} className="top-bar-img" /></div>
+                <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}><h3 style={{margin: "6px"}}><b>LinguaPals</b></h3></div>
+            </div>
             <p id="welcome-user">Welcome {username}!</p>
             <div className="profile-dropdown">
                 <button 
                 onClick={ toggleDropdown }
                 style={{
                     background: "none",
-                    border: 'none',
-                    padding: 0
+                    border: "none",
+                    padding: 0,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}>
                     <img src={ ProfileImg } alt='Profile' className="top-bar-img" />
                 </button>
                 {isOpen && (
                     <ul className="dropdown-menu">
                         <li onClick={() => handleOptionClick('Log Out')}> Log Out </li>
-                        <li onClick={() => handleOptionClick('Account Info')}>Account Info</li>
                         <li onClick={() => handleOptionClick('Settings')}>Settings</li>
                     </ul>
                 )}
