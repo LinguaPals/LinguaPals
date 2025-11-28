@@ -34,12 +34,20 @@ export const createPost = async (req, res) => {
     if (!payload) return res.status(400).json({ success: false, message: "Missing request body" });
 
     let post;
-    if (payload.type === "video") {
-      post = await createVideoPost({ userId: req.userId, body: payload });
-    } else {
-      post = new Post(payload);
-      await post.save();
-    }
+        if (payload.type === "video") {
+          post = await createVideoPost({ userId: req.userId, body: payload });
+        } else {
+          // 🔒 SECURITY FIX: Server-populate matchId for non-video posts
+          const user = await User.findById(req.userId).select('currentMatchId').lean();
+          const matchId = user?.currentMatchId || null;
+          
+          post = new Post({
+            ...payload,
+            userId: req.userId,      // Always use authenticated userId
+            matchId                  // Always use server-side matchId
+          });
+          await post.save();
+        }
 
     // Handle streak and level progression after successful post creation
     if (req.userId) {
@@ -117,7 +125,29 @@ export const listMyDailyPost = async (req, res) => {
 export const listPartnerDailyPost = async (req, res) => {
   try {
     const { dateId, matchId } = req.query;
-    const doc = await Post.findOne({ matchId, dateId, userId: { $ne: req.userId } }).sort({ createdAt: 1 });
+    
+    // 🔒 SECURITY FIX: Validate matchId belongs to requesting user
+    const user = await User.findById(req.userId).select('currentMatchId').lean();
+    
+    // If user has no match, return empty
+    if (!user || !user.currentMatchId) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+    
+    // Verify requested matchId matches user's actual match
+    if (String(matchId) !== String(user.currentMatchId)) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "Not authorized to view posts from this match" 
+      });
+    }
+    
+    const doc = await Post.findOne({ 
+      matchId, 
+      dateId, 
+      userId: { $ne: req.userId } 
+    }).sort({ createdAt: 1 });
+    
     return res.status(200).json({ success: true, data: doc ? [doc] : [] });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });
