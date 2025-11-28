@@ -2,8 +2,11 @@ import CompanyLogo from "/src/images/temporary_logo.jpeg"
 import ProfileImg from "/src/images/profile.png"
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import SettingsModal from './SettingsModal.jsx'
+
 const TopBar = ({ username, onLogout }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     const navigate = useNavigate();
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -19,6 +22,10 @@ const TopBar = ({ username, onLogout }) => {
             localStorage.removeItem("userID");
 
             navigate('/login');
+        }
+        if (option === 'Settings') {
+            setShowSettings(true);
+            setIsOpen(false);
         }
         console.log('Selected option:', option);
         
@@ -50,6 +57,9 @@ const TopBar = ({ username, onLogout }) => {
                         <li onClick={() => handleOptionClick('Log Out')}> Log Out </li>
                         <li onClick={() => handleOptionClick('Settings')}>Settings</li>
                     </ul>
+                )}
+                {showSettings && (
+                    <SettingsModal onClose={() => setShowSettings(false)} />
                 )}
             </div>
         </div>

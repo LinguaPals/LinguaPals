@@ -23,6 +23,7 @@ function Dashboard({ user, setUser }) {
     const [error, setError] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [showRecorder, setShowRecorder] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
     const [matchState, setMatchState] = useState(initialMatchState);
     const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, username: null });
@@ -270,7 +271,7 @@ function Dashboard({ user, setUser }) {
                         )}
                         <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
                         
-                        /* Posts Section */
+                        {/* Posts Section */}
                         <div style={{ marginTop: '20px', width: '100%' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                                 <h3 style={{ margin: 0, color: 'black' }}>Recent Video Posts</h3>
