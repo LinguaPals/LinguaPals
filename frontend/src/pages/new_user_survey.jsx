@@ -76,6 +76,7 @@ function NewUserSurvey() {
                     <select 
                      id="proficiency-level" 
                      value={proficiency}
+                     style={{margin: "8px 0", padding: "6px" }}
                      onChange={(e) => setProficiency(e.target.value)} 
                      className="survey-field"
                      >
@@ -88,13 +89,17 @@ function NewUserSurvey() {
                         <option value="c1">-- C1: Can express ideas fluently and spontaneously --</option>
                         <option value="c2">-- C2: Near pefect fluency --</option>
                     </select>
-                    <label htmlFor="canMatch">I am willing to be matched with other users</label>
+                    
+                    <div style={{margin: "4px 0"}}>
                     <input 
                         type="checkbox"
                         checked={canMatch}
+                        style={{margin: "10px"}}
                         onChange={(e) => setCanMatch(e.target.checked)}
                     />
-                    <button onClick={handleSubmit} type="submit">Submit</button>
+                    <label htmlFor="canMatch">I am willing to be matched with other users</label>
+                    </div>
+                    <button onClick={handleSubmit} type="submit" style={{margin: "4px"}}>Submit</button>
                 </form>
             </div>
         </>

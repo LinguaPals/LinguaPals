@@ -5,48 +5,88 @@ import { getWeekTag } from "../utils/dateIds.js"
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] } return a }
 
 export const requestMatchForUser = async (userId, weekTag = getWeekTag()) => {
+  console.log("DEBUG: requestMatchForUser called for user:", userId)
+
+  // 1. Load the user
   const user = await User.findById(userId)
   if (!user) return { matched: false, waiting: false }
+  
+  // 2. Normalize and validate language
   const language = (user.language || "").trim().toLowerCase()
   if (!language) return { matched: false, waiting: false }
+  
+  // 3. Check if user is already matched
   if (user.isMatched && user.currentMatchId) {
     const match = await Match.findById(user.currentMatchId).lean()
+    
+    // Match doesn't exist (stale data) - reset user
     if (!match) {
       user.isMatched = false
       user.currentMatchId = null
+      user.canMatch = false
       await user.save()
+      // Continue to partner search below
     } else {
+      // Match exists - return existing match
       const partnerId = String(match.userA) === String(userId) ? match.userB : match.userA
-      const partner = await User.findById(partnerId);
-      return { matched: true, matchId: match._id, partnerId, partnerUsername: partner.username }
+      const partner = await User.findById(partnerId)
+      return { 
+        matched: true, 
+        matchId: match._id, 
+        partnerId, 
+        partnerUsername: partner?.username 
+      }
     }
   }
-  const partner = await User.findOne({
+  
+  // 4. Search for eligible partners (RANDOM SELECTION)
+  const candidates = await User.find({
     _id: { $ne: userId },
     language,
     isMatched: false,
     canMatch: true
   })
-  if (partner) {
-    const match = await Match.create({ weekTag, userA: user._id, userB: partner._id })
-    user.currentMatchId = match._id
-    user.isMatched = true
-    user.canMatch = false
-    user.partnerUsername = partner.username;
-    partner.partnerUsername = user.username;
-    partner.currentMatchId = match._id
-    partner.isMatched = true
-    partner.canMatch = false
-    
+  
+  // No partners available - user enters waiting pool
+  if (candidates.length === 0) {
+    user.isMatched = false
+    user.currentMatchId = null
+    user.canMatch = true  // User becomes waiting
     await user.save()
-    await partner.save()
-    return { matched: true, matchId: match._id, partnerId: partner._id, partnerUsername: partner.username }
+    return { matched: false, waiting: true }
   }
-  user.isMatched = false
-  user.currentMatchId = null
-  user.canMatch = true
+  
+  // Partner(s) found - select one randomly
+  const randomIndex = Math.floor(Math.random() * candidates.length)
+  const partner = candidates[randomIndex]
+  
+  // Create the match
+  const match = await Match.create({ 
+    weekTag, 
+    userA: user._id, 
+    userB: partner._id 
+  })
+  
+  // Update both users
+  user.currentMatchId = match._id
+  user.isMatched = true
+  user.canMatch = false
+  user.partnerUsername = partner.username
+  
+  partner.currentMatchId = match._id
+  partner.isMatched = true
+  partner.canMatch = false
+  partner.partnerUsername = user.username
+  
   await user.save()
-  return { matched: false, waiting: true }
+  await partner.save()
+  
+  return { 
+    matched: true, 
+    matchId: match._id, 
+    partnerId: partner._id, 
+    partnerUsername: partner.username 
+  }
 }
 
 export const generateAndPublish = async (weekTag = getWeekTag()) => {

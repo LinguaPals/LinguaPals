@@ -7,7 +7,15 @@ import RecordVideo from '../components/record.jsx'
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { getPosts, createPost, deletePost, requestMatch, deleteMatchForUsers } from '../services/postService.js'
-import { getCurrentUser } from '../services/userService.js'
+import { getCurrentUser, getUserState } from '../services/userService.js'
+
+const initialMatchState = {
+    isMatched: false,
+    partnerId: null,
+    partnerUsername: null,
+    currentMatchId: null,
+    waiting: false
+};
 
 function Dashboard({ user, setUser }) {
     const [posts, setPosts] = useState([]);
@@ -16,10 +24,44 @@ function Dashboard({ user, setUser }) {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [showRecorder, setShowRecorder] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
-    const [usersPair, setUsersPair] = useState(null);
+    const [matchState, setMatchState] = useState(initialMatchState);
     const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, username: null });
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
+
+    const applyMatchState = (matchData) => {
+        if (!matchData) {
+            setMatchState(initialMatchState);
+            return;
+        }
+        setMatchState({
+            isMatched: Boolean(matchData.isMatched ?? matchData.matched ?? matchData.matchId),
+            partnerId: matchData.partnerId ?? null,
+            partnerUsername: matchData.partnerUsername ?? null,
+            currentMatchId: matchData.currentMatchId ?? matchData.matchId ?? null,
+            waiting: Boolean(matchData.waiting)
+        });
+    };
+
+    const fetchMatchState = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            setMatchState(initialMatchState);
+            return;
+        }
+        try {
+            const response = await getUserState();
+            if (response?.success) {
+                applyMatchState(response.data?.match ?? null);
+            } else {
+                setMatchState(initialMatchState);
+            }
+        } catch (err) {
+            console.error('Unable to load user state:', err);
+            setMatchState(initialMatchState);
+        }
+    };
+
     const fetchUserStats = async () => {
         try {
             setStatsLoading(true);
@@ -32,9 +74,6 @@ function Dashboard({ user, setUser }) {
                     level: response.data.level ?? 0,
                     username: response.data.username ?? null
                 });
-                //set users pair
-                console.log("Partner Username: ", response.data.partnerUsername);
-                setUsersPair(response.data.partnerUsername);
             } else {
                 setStatsError('Unable to load stats');
             }
@@ -45,12 +84,25 @@ function Dashboard({ user, setUser }) {
             setStatsLoading(false);
         }
     };
+    const handleLogout = () => {
+        setUser(null);
+        setPosts([]);
+        setUserStats({ streakCount: 0, level: 0, username: null });
+        setMatchState(initialMatchState);
+    };
 
-    // Fetch data on mount
+    // Fetch data when user/token changes
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            handleLogout();
+            return;
+        }
         fetchPosts();
         fetchUserStats();
-    }, []);
+        fetchMatchState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     const fetchPosts = async () => {
         try {
@@ -110,7 +162,6 @@ function Dashboard({ user, setUser }) {
             
             if (response.success) {
                 setPosts([response.data, ...posts]);
-                setShowRecorder(false);
                 alert('Video post created successfully!');
                 // Update level if returned from backend
                 if (response.user?.level !== undefined) {
@@ -136,7 +187,7 @@ function Dashboard({ user, setUser }) {
     };
 
     const matchUser = async () => {
-        if(usersPair) {
+        if(matchState.isMatched || matchState.partnerUsername) {
             alert(`User is already matched`);
             return;
         }
@@ -146,8 +197,17 @@ function Dashboard({ user, setUser }) {
                 console.error("Error finding match");
                 return;
             }
-            console.log("Partner username", pair.data.partnerUsername);
-            setUsersPair(pair.data.partnerUsername);
+            if (pair.data) {
+                applyMatchState({
+                    matched: pair.data.matched,
+                    partnerId: pair.data.partnerId,
+                    partnerUsername: pair.data.partnerUsername,
+                    matchId: pair.data.matchId,
+                    waiting: pair.data.waiting
+                });
+            } else {
+                await fetchMatchState();
+            }
             console.log("Successfully matched user");
 
         } catch (error) {
@@ -159,9 +219,10 @@ function Dashboard({ user, setUser }) {
     const unmatchUser = async () => {
         try {
             const response = await deleteMatchForUsers();
-
-            setUsersPair(null);
-            alert("You have been unmatched successfully.");
+            if (response?.success) {
+                await fetchMatchState();
+                alert("You have been unmatched successfully.");
+            }
         }
         catch (error) {
             console.log("Failed unmatching user ", error);
@@ -171,20 +232,19 @@ function Dashboard({ user, setUser }) {
     return (
         <>
             <div>
-                <TopBar username={userStats.username} user_auth={user} setUser={setUser}/>
+                <TopBar username={userStats.username} user_auth={user} setUser={setUser} onLogout={handleLogout}/>
             </div>
 
             <div className="content">
-                <h1 className="logo">LinguaPals</h1>
                 <div className="dashboard-layout">
                     <div className="center-box">
-                        {!usersPair ? (
+                        {!matchState.partnerUsername ? (
                         <button className="match-button"
                         onClick={matchUser}>
                         Match Me!
                         </button> ) : (
                         <>
-                            <h2 style={{color:"black"}}>You're matched with {usersPair}!</h2>
+                            <h2 style={{color:"black"}}>You're matched with {matchState.partnerUsername}!</h2>
                             <button className="unmatch-button"
                                     onClick={unmatchUser}>
                                 -Unmatch-
@@ -192,7 +252,6 @@ function Dashboard({ user, setUser }) {
                         </>       
                         )}
                         <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
-                        <h4 style={{ color: "black", margin: "5px"}}>Your turn to respond</h4>
                         
                         {/* Posts Section */}
                         <div style={{ marginTop: '20px', width: '100%' }}>
@@ -241,27 +300,48 @@ function Dashboard({ user, setUser }) {
                     <div className="right-cards">
                         <Card
                             title="Streak"
-                            value={statsLoading ? '...' : statsError ? '--' : userStats.streakCount}
                             footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Consecutive days active'}
+                            children={<div style={{ position: "relative", display: "inline-block" }}>
+                                <span style={{ fontSize: "75px" }}>🔥</span>
+
+                                <div style={{
+                                    position: "absolute",
+                                    bottom: 0,
+                                    right: 5,
+                                    width: "35px",
+                                    height: "35px",
+                                    background: "#ff5722",
+                                    color: "white",
+                                    borderRadius: "50%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontWeight: "bold",
+                                    fontSize: "18px",
+                                    border: "2px solid white"
+                                }}>
+                                    {userStats.streakCount}
+                                </div>
+                                </div>
+                            }
                         />
                         <Card
                             title="Level"
-                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Number of videos posted'}
-                            children={<div style={{width: "33%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto"}}><CircularProgressbar
+                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Number of 5-day streaks accumulated'}
+                            children={<div style={{width: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto"}}><CircularProgressbar
                                 value={userStats.level}
                                 text={userStats.level}
                                 styles={buildStyles({
                                     pathColor: 'rgb(166,192,94)',
                                     textColor: '#333',
                                     trailColor: '#d6d6d6'
-                                })}/></div>}
+                                })}/></div>
+                            }
                         />
                     </div>
                 </div>
             </div>
-            <BottomBar />
-        </>
-    )
-}
+    </>
+)}
 export default Dashboard;
 

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import { createVideoPost } from "./videoService.js";
+import { handleSuccessfulPost } from "./progressService.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -33,25 +34,41 @@ export const createPost = async (req, res) => {
     if (!payload) return res.status(400).json({ success: false, message: "Missing request body" });
 
     let post;
-    if (payload.type === "video") {
-      post = await createVideoPost({ userId: req.userId, body: payload });
-    } else {
-      post = new Post(payload);
-      await post.save();
-    }
+        if (payload.type === "video") {
+          post = await createVideoPost({ userId: req.userId, body: payload });
+        } else {
+          // 🔒 SECURITY FIX: Server-populate matchId for non-video posts
+          const user = await User.findById(req.userId).select('currentMatchId').lean();
+          const matchId = user?.currentMatchId || null;
+          
+          post = new Post({
+            ...payload,
+            userId: req.userId,      // Always use authenticated userId
+            matchId                  // Always use server-side matchId
+          });
+          await post.save();
+        }
 
-    // Increment user level every time a post is created
+    // Handle streak and level progression after successful post creation
     if (req.userId) {
       try {
-        const updatedUser = await User.findByIdAndUpdate(
-          req.userId,
-          { $inc: { level: 1 } },
-          { new: true, select: "level" }
-        );
-        return res.status(201).json({ success: true, data: post, user: { level: updatedUser?.level } });
-      } catch (incErr) {
-        // If increment fails, still return post
-        return res.status(201).json({ success: true, data: post, warning: "Post created but level not incremented" });
+        const progressData = await handleSuccessfulPost(req.userId);
+        return res.status(201).json({ 
+          success: true, 
+          data: post, 
+          user: { 
+            level: progressData.level,
+            streakCount: progressData.streakCount
+          } 
+        });
+      } catch (progressErr) {
+        // If progress update fails, still return post (graceful degradation)
+        console.error("Progress update failed:", progressErr);
+        return res.status(201).json({ 
+          success: true, 
+          data: post, 
+          warning: "Post created but progress not updated" 
+        });
       }
     }
 
@@ -108,7 +125,29 @@ export const listMyDailyPost = async (req, res) => {
 export const listPartnerDailyPost = async (req, res) => {
   try {
     const { dateId, matchId } = req.query;
-    const doc = await Post.findOne({ matchId, dateId, userId: { $ne: req.userId } }).sort({ createdAt: 1 });
+    
+    // 🔒 SECURITY FIX: Validate matchId belongs to requesting user
+    const user = await User.findById(req.userId).select('currentMatchId').lean();
+    
+    // If user has no match, return empty
+    if (!user || !user.currentMatchId) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+    
+    // Verify requested matchId matches user's actual match
+    if (String(matchId) !== String(user.currentMatchId)) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "Not authorized to view posts from this match" 
+      });
+    }
+    
+    const doc = await Post.findOne({ 
+      matchId, 
+      dateId, 
+      userId: { $ne: req.userId } 
+    }).sort({ createdAt: 1 });
+    
     return res.status(200).json({ success: true, data: doc ? [doc] : [] });
   } catch (e) {
     res.status(500).json({ success: false, message: "Server Error" });

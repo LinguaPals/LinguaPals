@@ -22,6 +22,18 @@ export const getCurrentUser = async () => {
   }
 };
 
+export const getUserState = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/state/me`, {
+      headers: getAuthHeaders()
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user state:', error);
+    throw error;
+  }
+};
+
 export const updateUserProfile = async (userId, updates) => {
   try {
     const response = await axios.put(`${API_BASE_URL}/users/${userId}`, updates, {
