@@ -159,8 +159,8 @@ function RecordVideo({ onVideoSubmit }) {
                 />
             )}
             {!showRecorder && (
-                <button onClick={() => setShowRecorder(true)}>
-                    Record Video
+                <button id="record-video-button" onClick={() => setShowRecorder(true)}>
+                    Record
                 </button>
             )}
         </div>
