@@ -44,7 +44,7 @@ function NewUserSurvey() {
     return (
         <>
             <div className="survey-page">
-                <h1 style={{color: "rgb(166,192,94"}}>Tell us about yourself</h1>
+                <h1 style={{color: "rgb(166,192,94", marginTop: "15px"}}>Tell us about yourself</h1>
                 <form className="survey-form">
                     <label for='name'>Create an username</label>
                     <input

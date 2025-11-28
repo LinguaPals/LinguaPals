@@ -50,9 +50,21 @@ function Dashboard({ user, setUser }) {
             return;
         }
         try {
-            const response = await getUserState();
-            if (response?.success) {
-                applyMatchState(response.data?.match ?? null);
+            // Load user info and update match
+            const response = await getCurrentUser();
+            if (response?.success && response?.data) {
+                const currentUser = response.data;
+                const matchData = (currentUser.currentMatchId || currentUser.partnerUsername || curentUser.isMatched)
+                    ? {
+                        matchId: currentUser.currentMatchId ?? null,
+                        partnerId: null,
+                        partnerUsername: currentUser.partnerUsername ?? null,
+                        matched: Boolean(currentUser.isMatched),
+                        waiting: Boolean(!currentUser.isMatched && currentUser.currentMatchId),
+                        isMatched: Boolean(currentUser.isMatched)
+                      }
+                    : null;
+                applyMatchState(matchData);
             } else {
                 setMatchState(initialMatchState);
             }
@@ -139,9 +151,10 @@ function Dashboard({ user, setUser }) {
                 setNewPost({ title: '', description: '' });
                 setShowCreateForm(false);
                 // Update level if returned from backend
-                if (response.user?.level !== undefined) {
-                    setUserStats(prev => ({ ...prev, level: response.user.level }));
-                }
+                // Update streak if returned from backend
+                if (response.user?.streakCount !== undefined) {
+                        setUserStats(prev => ({ ...prev, streakCount: response.user.streakCount }));
+                    }
             }
         } catch (err) {
             alert('Failed to create post');
@@ -166,6 +179,10 @@ function Dashboard({ user, setUser }) {
                 // Update level if returned from backend
                 if (response.user?.level !== undefined) {
                     setUserStats(prev => ({ ...prev, level: response.user.level }));
+                }
+                // Update streak if returned from backend
+                if (response.user?.streakCount !== undefined) {
+                    setUserStats(prev => ({ ...prev, streakCount: response.user.streakCount }));
                 }
             }
         } catch (err) {
@@ -253,12 +270,12 @@ function Dashboard({ user, setUser }) {
                         )}
                         <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
                         
-                        {/* Posts Section */}
+                        /* Posts Section */
                         <div style={{ marginTop: '20px', width: '100%' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                                <h3 style={{ margin: 0, color: 'black' }}>Recent Posts</h3>
+                                <h3 style={{ margin: 0, color: 'black' }}>Recent Video Posts</h3>
                                 <button 
-                                    onClick={() => setShowRecorder(!showRecorder)}
+                                    onClick={matchState.partnerUsername ? () => setShowRecorder(prev => !prev) : () => window.alert("Please create a match before posting.")}
                                     style={{
                                         background: '#4CAF50',
                                         color: 'white',
@@ -268,13 +285,13 @@ function Dashboard({ user, setUser }) {
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    {showRecorder ? 'Cancel' : '+ New Post'}
+                                    + New Video Post
                                 </button>
                             </div>
 
                             {/* Video Recorder */}
                             {showRecorder && (
-                                <RecordVideo onVideoSubmit={handleVideoSubmit} />
+                                <RecordVideo onVideoSubmit={handleVideoSubmit} onClose={() => setShowRecorder(false)} />
                             )}
 
                             {/* Posts List */}
@@ -289,7 +306,8 @@ function Dashboard({ user, setUser }) {
                                     {posts.map(post => (
                                         <PostCard 
                                             key={post._id} 
-                                            post={post} 
+                                            post={post}
+                                            partner={matchState.partnerUsername}
                                             onDelete={handleDeletePost}
                                         />
                                     ))}

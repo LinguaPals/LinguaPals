@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PostCard = ({ post, onDelete }) => {
+const PostCard = ({ post, onDelete, partner }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -23,13 +23,15 @@ const PostCard = ({ post, onDelete }) => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
         <div style={{ flex: 1 }}>
           <h3 style={{ margin: '0 0 8px 0', color: '#333' }}>{post.title}</h3>
-          <p style={{ margin: '0 0 8px 0', color: '#666' }}>{post.description}</p>
+          <p style={{ margin: '0 0 8px 0', color: '#666' }}>
+            {post?.userId?.toString() === localStorage.getItem('userID') ? 'Posted by you' : `Posted by ${partner}`}
+          </p>
           <small style={{ color: '#999' }}>
             {formatDate(post.createdAt)}
             {post.status && ` • ${post.status}`}
           </small>
         </div>
-        {onDelete && (
+        {onDelete && (post?.userId?.toString() === localStorage.getItem('userID')) && (
           <button 
             onClick={() => onDelete(post._id)}
             style={{
