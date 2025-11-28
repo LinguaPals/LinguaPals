@@ -280,6 +280,18 @@ select:hover{
   animation: shine 3s linear infinite;
 }
 
+#record-video-button {
+  background-color: red;
+  margin: 5px;
+  border-radius: 30px;
+  
+}
+
+#record-video-button:hover {
+  transform: scale(1.05);
+  border: 2px dashed black;
+}
+
 .chat-status, .progress-stats {
   margin-top: auto;
   padding: 15px;
