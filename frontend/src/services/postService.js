@@ -13,7 +13,7 @@ const getAuthHeaders = () => {
 
 export const requestMatch = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/matches/request`,{}, {
+    const response = await axios.post(`${API_BASE_URL}/matches/request`, {}, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -31,19 +31,21 @@ export const getMatchForUsers = async () => {
     });
     return response.data;
   } catch(error) {
-      console.log('Error matching user:', error);
-      throw error;
+    console.log('Error matching user:', error);
+    throw error;
   }
 };
 
 export const deleteMatchForUsers = async () => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/matches/delete-match`, { headers: getAuthHeaders() })
-    console.log("Deleted successfully")
-    return response.data
+    const response = await axios.delete(`${API_BASE_URL}/matches/delete-match`, { 
+      headers: getAuthHeaders() 
+    });
+    console.log("Deleted successfully");
+    return response.data;
   } catch (error) {
-    console.log("Error deleting match", error)
-    throw error
+    console.log("Error deleting match", error);
+    throw error;
   }
 }
 
@@ -60,7 +62,7 @@ export const getPosts = async () => {
   }
 };
 
-// Create a new post
+// Create a new post (non-video)
 export const createPost = async (postData) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/posts`, postData, {
@@ -69,6 +71,40 @@ export const createPost = async (postData) => {
     return response.data;
   } catch (error) {
     console.error('Error creating post:', error);
+    throw error;
+  }
+};
+
+// Create a video post with file upload
+export const createVideoPost = async (videoBlob, title, description) => {
+  try {
+    const formData = new FormData();
+    formData.append('type', 'video');
+    formData.append('title', title);
+    formData.append('description', description || 'Video post');
+    formData.append('video', videoBlob, 'upload.mp4');
+    
+    const token = localStorage.getItem('token');
+    
+    // Use fetch instead of axios to properly handle FormData
+    // DON'T set Content-Type - browser will set it with boundary
+    const response = await fetch(`${API_BASE_URL}/posts`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+        // NO Content-Type header - let browser set multipart/form-data
+      },
+      body: formData
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to create video post');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating video post:', error);
     throw error;
   }
 };

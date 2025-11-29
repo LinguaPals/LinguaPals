@@ -1,4 +1,5 @@
 import React from 'react';
+import VideoPlayer from './VideoPlayer.jsx';
 
 const PostCard = ({ post, onDelete, partner }) => {
   const formatDate = (dateString) => {
@@ -48,6 +49,18 @@ const PostCard = ({ post, onDelete, partner }) => {
           </button>
         )}
       </div>
+      
+      {/* Video Player - only show if post has storage info */}
+      {post.storage?.storageId && (
+        <div style={{ marginTop: '15px' }}>
+          <VideoPlayer postId={post._id} mimeType={post.media?.mime} />
+        </div>
+      )}
+      
+      {/* Show description if exists */}
+      {post.description && post.description !== 'Video post' && (
+        <p style={{ marginTop: '10px', color: '#555' }}>{post.description}</p>
+      )}
     </div>
   );
 };

@@ -165,18 +165,17 @@ function Dashboard({ user, setUser }) {
 
     const handleVideoSubmit = async (videoBlob, title) => {
         try {
-            // For now, create a post with the title and a placeholder for video
-            // You can upload the video to your backend/storage service here
-            const response = await createPost({
-                title: title,
-                description: 'Video post',
-                userId: localStorage.getItem('userID'),
-                // videoBlob can be uploaded to backend or cloud storage
-            });
+            // Import the new createVideoPost function
+            const { createVideoPost: createVideoPostAPI } = await import('../services/postService.js');
+            
+            // Upload video with FormData
+            const response = await createVideoPostAPI(videoBlob, title, 'Video post');
             
             if (response.success) {
                 setPosts([response.data, ...posts]);
+                setShowRecorder(false);
                 alert('Video post created successfully!');
+                
                 // Update level if returned from backend
                 if (response.user?.level !== undefined) {
                     setUserStats(prev => ({ ...prev, level: response.user.level }));
@@ -187,7 +186,7 @@ function Dashboard({ user, setUser }) {
                 }
             }
         } catch (err) {
-            alert('Failed to create video post');
+            alert('Failed to create video post: ' + (err.message || 'Unknown error'));
             console.error(err);
         }
     };
