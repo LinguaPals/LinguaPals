@@ -15,6 +15,9 @@ import {
 
 const router = express.Router();
 
+// Stream endpoint FIRST (no requireAuth since token in query param)
+router.get("/:id/stream", streamPost);
+
 router.get("/", requireAuth, getPosts);
 
 // Add uploadSingleVideo middleware BEFORE createPost
@@ -25,8 +28,5 @@ router.put("/:id", requireAuth, updatePost);
 router.get("/daily", requireAuth, listMyDailyPost);
 router.get("/partner", requireAuth, listPartnerDailyPost);
 router.get("/:id/play", requireAuth, playPost);
-
-// New streaming endpoint
-router.get("/:id/stream", streamPost);
 
 export default router;

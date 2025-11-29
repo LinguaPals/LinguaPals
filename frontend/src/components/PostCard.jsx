@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import VideoPlayer from './VideoPlayer.jsx';
+import VideoModal from './VideoModal.jsx';
 
 const PostCard = ({ post, onDelete, partner }) => {
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -52,16 +55,54 @@ const PostCard = ({ post, onDelete, partner }) => {
         </div>
       </div>
       
-      {/* Video Player - only show if post has storage info */}
+      {/* View Video Button - only show if post has storage info */}
       {post.storage?.storageId && (
-        <div style={{ marginTop: '15px' }}>
-          <VideoPlayer postId={post._id} mimeType={post.media?.mime} />
+        <div style={{ marginTop: '15px', marginBottom: '15px' }}>
+          <button 
+            onClick={() => setShowVideoModal(true)}
+            style={{
+              background: 'linear-gradient(135deg, #2196F3, #1976D2)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 28px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 15px rgba(33, 150, 243, 0.3)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              letterSpacing: '0.5px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(33, 150, 243, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(33, 150, 243, 0.3)';
+            }}
+          >
+            <span>▶</span>
+            View Video
+          </button>
         </div>
       )}
       
       {/* Show description if exists */}
       {post.description && post.description !== 'Video post' && (
         <p style={{ marginTop: '10px', color: '#555' }}>{post.description}</p>
+      )}
+
+      {/* Video Modal */}
+      {showVideoModal && (
+        <VideoModal 
+          postId={post._id} 
+          mimeType={post.media?.mime}
+          onClose={() => setShowVideoModal(false)}
+        />
       )}
     </div>
   );

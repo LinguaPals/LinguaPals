@@ -233,6 +233,10 @@ export const playPost = async (req, res) => {
 
 export const streamPost = async (req, res) => {
   try {
+    console.log('Stream request received for post:', req.params.id);
+    console.log('Query params:', req.query);
+    console.log('Headers:', req.headers);
+    
     // For video streaming, accept token from query param (since <video> tag can't send headers)
     let userId = req.userId; // From middleware
     
@@ -240,33 +244,43 @@ export const streamPost = async (req, res) => {
     if (!userId && req.query.token) {
       try {
         const jwt = await import('jsonwebtoken');
-        const decoded = jwt.verify(req.query.token, process.env.JWT_SECRET || "dev_secret");
-        userId = decoded.userId;
+        const decoded = jwt.default.verify(req.query.token, process.env.JWT_SECRET || "dev_secret");
+        userId = decoded.userID; // Note: JWT uses userID not userId
+        console.log('Token verified, userId:', userId);
       } catch (tokenError) {
+        console.error("Token verification error:", tokenError.message);
         return res.status(401).json({ success: false, message: "Invalid token" });
       }
     }
     
     if (!userId) {
+      console.error('No userId found');
       return res.status(401).json({ success: false, message: "Authentication required" });
     }
     
     const post = await Post.findById(req.params.id);
     if (!post) {
+      console.error('Post not found:', req.params.id);
       return res.status(404).json({ success: false, message: "Post not found" });
     }
+    
+    console.log('Post found, storage:', post.storage);
     
     // Verify user can access this post (own post or matched partner's post)
     const user = await User.findById(userId).lean();
     const isOwnPost = String(post.userId) === String(userId);
     const isMatchedPost = user && user.currentMatchId && String(post.matchId) === String(user.currentMatchId);
     
+    console.log('Access check - isOwnPost:', isOwnPost, 'isMatchedPost:', isMatchedPost);
+    
     if (!isOwnPost && !isMatchedPost) {
+      console.error('User not authorized to view post');
       return res.status(403).json({ success: false, message: "Not authorized to view this post" });
     }
     
     // Check if storage info exists
     if (!post.storage?.storageId) {
+      console.error('No storage info for post');
       return res.status(404).json({ success: false, message: "Video file not found" });
     }
     
@@ -275,9 +289,13 @@ export const streamPost = async (req, res) => {
       const storage = await import("../lib/storage/mongoBlobStorage.js");
       const videoStream = storage.getReadStream(post.storage.storageId);
       
+      console.log('Video stream created');
+      
       // Set proper headers for video streaming
       res.setHeader("Content-Type", post.media?.mime || "video/mp4");
       res.setHeader("Accept-Ranges", "bytes");
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      res.setHeader("Access-Control-Allow-Origin", "*");
       
       // Handle stream errors
       videoStream.on("error", (error) => {
@@ -289,6 +307,7 @@ export const streamPost = async (req, res) => {
       
       // Pipe GridFS stream to response
       videoStream.pipe(res);
+      console.log('Video stream piped to response');
       
     } catch (streamError) {
       console.error("Failed to create video stream:", streamError);

@@ -1,6 +1,6 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
-import storage from "../lib/storage/mongoBlobStorage.js";
+import * as storage from "../lib/storage/mongoBlobStorage.js";
 import { emit } from "../lib/events.js";
 import { getDateId, getWeekTag } from "../utils/dateIds.js";
 
