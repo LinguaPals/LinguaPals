@@ -1,11 +1,38 @@
-import mongoose from "mongoose";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
 import Match from "../models/matchModel.js";
 import { createVideoPost } from "./videoService.js";
 import { handleSuccessfulPost } from "./progressService.js";
 import { sendEmail } from "../utils/sendEmail.js";
-import { getPartnerDailyPost } from "../../frontend/src/services/postService.js";
+
+const notifyPartnerOfPost = async ({ actorUserId, post }) => {
+  try {
+    const actor = await User.findById(actorUserId).select("username currentMatchId");
+    if (!actor?.currentMatchId) return;
+
+    const match = await Match.findById(actor.currentMatchId).lean();
+    if (!match) return;
+
+    const partnerId = String(match.userA) === String(actorUserId) ? match.userB : match.userA;
+    if (!partnerId) return;
+
+    const partner = await User.findById(partnerId).select("email username canEmail");
+    if (!partner?.email || partner.canEmail === false) return;
+
+    const actorName = actor.username || "Your partner";
+    const partnerName = partner.username || "there";
+    const mediaLabel = post?.media?.mime?.startsWith("video/") ? "video" : "post";
+
+    await sendEmail({
+      to: partner.email,
+      subject: `${actorName} just shared a new ${mediaLabel}`,
+      body: `Hi ${partnerName}, ${actorName} just uploaded a new ${mediaLabel} on LinguaPals. Log in to view it!`,
+      canEmail: partner.canEmail
+    });
+  } catch (err) {
+    console.error("Failed to send partner notification email:", err);
+  }
+};
 
 export const getPosts = async (req, res) => {
   try {
@@ -37,20 +64,33 @@ export const createPost = async (req, res) => {
     if (!payload) return res.status(400).json({ success: false, message: "Missing request body" });
 
     let post;
-        if (payload.type === "video") {
-          post = await createVideoPost({ userId: req.userId, body: payload });
-        } else {
-          // 🔒 SECURITY FIX: Server-populate matchId for non-video posts
-          const user = await User.findById(req.userId).select('currentMatchId').lean();
-          const matchId = user?.currentMatchId || null;
-          
-          post = new Post({
-            ...payload,
-            userId: req.userId,      // Always use authenticated userId
-            matchId                  // Always use server-side matchId
-          });
-          await post.save();
-        }
+    if (payload.type === "video") {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "Video file is required for video posts"
+        });
+      }
+
+      post = await createVideoPost({
+        userId: req.userId,
+        body: payload,
+        file: req.file
+      });
+    } else {
+      // 🔒 SECURITY FIX: Server-populate matchId for non-video posts
+      const user = await User.findById(req.userId).select('currentMatchId').lean();
+      const matchId = user?.currentMatchId || null;
+
+      post = new Post({
+        ...payload,
+        userId: req.userId,
+        matchId
+      });
+      await post.save();
+    }
+
+    await notifyPartnerOfPost({ actorUserId: req.userId, post });
 
     // Handle streak and level progression after successful post creation
     if (req.userId) {
