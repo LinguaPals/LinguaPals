@@ -18,6 +18,7 @@ var UserSchema = new Schema({
   canMatch: { type: Boolean, required: false, default: null },
   isMatched: { type: Boolean, required: false, default: false },
   isNewGoogle: { type: Boolean, required: false, default: false },
+  canEmail: { type: Boolean, required: false, default: true },
   partnerUsername: {type: String, required: false, default: null }
 });
 

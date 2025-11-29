@@ -8,6 +8,7 @@ export default function SettingsModal({ onClose }) {
     const [proficiency, setProficiency] = useState("");
     const [username, setUsername] = useState("");
     const [canMatch, setCanMatch] = useState(false);
+    const [canEmail, setCanEmail] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -19,7 +20,8 @@ export default function SettingsModal({ onClose }) {
         axios.put(`http://localhost:5050/api/users/${userID}`, {
             language: language,
             proficiency: proficiency,
-            canMatch: canMatch
+            canMatch: canMatch,
+            canEmail: canEmail,
         })
         .then((response) => {
             console.log("Updated User:", response.data);
@@ -83,6 +85,15 @@ export default function SettingsModal({ onClose }) {
                 />
                 <label htmlFor="canMatch">I am willing to be matched with other users</label>
                 </div>
+                <div style={{margin: "4px 0"}}>
+                    <input 
+                        type="checkbox"
+                        checked={canEmail}
+                        style={{margin: "10px"}}
+                        onChange={(e) => setCanEmail(e.target.checked)}
+                    />
+                    <label htmlFor="canEmail">I am to recieve email notifications</label>
+                    </div>
                 <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                     <button type="submit" style={{ margin: "4px" }}>Submit</button>
                     <button type="button" onClick={onClose} style={{ margin: "4px" }}>Cancel</button>

@@ -23,7 +23,6 @@ function Dashboard({ user, setUser }) {
     const [error, setError] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [showRecorder, setShowRecorder] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
     const [matchState, setMatchState] = useState(initialMatchState);
     const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, username: null });
@@ -296,7 +295,7 @@ function Dashboard({ user, setUser }) {
                             ) : posts.length === 0 ? (
                                 <p style={{ color: '#666' }}>No posts yet. Create your first post!</p>
                             ) : (
-                                <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                <div style={{ maxHeight: '390px', overflowY: 'auto' }}>
                                     {posts.map(post => (
                                         <PostCard 
                                             key={post._id} 

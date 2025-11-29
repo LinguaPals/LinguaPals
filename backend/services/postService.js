@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
+import Match from "../models/matchModel.js";
 import { createVideoPost } from "./videoService.js";
 import { handleSuccessfulPost } from "./progressService.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import { getPartnerDailyPost } from "../../frontend/src/services/postService.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -47,6 +50,25 @@ export const createPost = async (req, res) => {
             matchId                  // Always use server-side matchId
           });
           await post.save();
+          if (matchId) {
+            try {
+              const match = await Match.findById(matchId).lean();
+              if (match) {
+                const partnerId = String(match.userA) === String(req.userId) ? match.userB : match.userA;
+                const partner = await User.findById(partnerId).select('email canEmail').lean();
+                if (partner?.email) {
+                  await sendEmail({
+                    to: partner.email,
+                    subject: "You received a new post!",
+                    body: "Open LinguaPals to view it now!",
+                    canEmail: partner.canEmail
+                  });
+                }
+              }
+            } catch (emailErr) {
+              console.error("Email send failed:", emailErr);
+            }
+          }
         }
 
     // Handle streak and level progression after successful post creation
