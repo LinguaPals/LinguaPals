@@ -50,9 +50,21 @@ function Dashboard({ user, setUser }) {
             return;
         }
         try {
-            const response = await getUserState();
-            if (response?.success) {
-                applyMatchState(response.data?.match ?? null);
+            // Load user info and update match
+            const response = await getCurrentUser();
+            if (response?.success && response?.data) {
+                const currentUser = response.data;
+                const matchData = (currentUser.currentMatchId || currentUser.partnerUsername || curentUser.isMatched)
+                    ? {
+                        matchId: currentUser.currentMatchId ?? null,
+                        partnerId: null,
+                        partnerUsername: currentUser.partnerUsername ?? null,
+                        matched: Boolean(currentUser.isMatched),
+                        waiting: Boolean(!currentUser.isMatched && currentUser.currentMatchId),
+                        isMatched: Boolean(currentUser.isMatched)
+                      }
+                    : null;
+                applyMatchState(matchData);
             } else {
                 setMatchState(initialMatchState);
             }
@@ -139,9 +151,10 @@ function Dashboard({ user, setUser }) {
                 setNewPost({ title: '', description: '' });
                 setShowCreateForm(false);
                 // Update level if returned from backend
-                if (response.user?.level !== undefined) {
-                    setUserStats(prev => ({ ...prev, level: response.user.level }));
-                }
+                // Update streak if returned from backend
+                if (response.user?.streakCount !== undefined) {
+                        setUserStats(prev => ({ ...prev, streakCount: response.user.streakCount }));
+                    }
             }
         } catch (err) {
             alert('Failed to create post');
@@ -151,25 +164,28 @@ function Dashboard({ user, setUser }) {
 
     const handleVideoSubmit = async (videoBlob, title) => {
         try {
-            // For now, create a post with the title and a placeholder for video
-            // You can upload the video to your backend/storage service here
-            const response = await createPost({
-                title: title,
-                description: 'Video post',
-                userId: localStorage.getItem('userID'),
-                // videoBlob can be uploaded to backend or cloud storage
-            });
+            // Import the new createVideoPost function
+            const { createVideoPost: createVideoPostAPI } = await import('../services/postService.js');
+            
+            // Upload video with FormData
+            const response = await createVideoPostAPI(videoBlob, title, 'Video post');
             
             if (response.success) {
                 setPosts([response.data, ...posts]);
+                setShowRecorder(false);
                 alert('Video post created successfully!');
+                
                 // Update level if returned from backend
                 if (response.user?.level !== undefined) {
                     setUserStats(prev => ({ ...prev, level: response.user.level }));
                 }
+                // Update streak if returned from backend
+                if (response.user?.streakCount !== undefined) {
+                    setUserStats(prev => ({ ...prev, streakCount: response.user.streakCount }));
+                }
             }
         } catch (err) {
-            alert('Failed to create video post');
+            alert('Failed to create video post: ' + (err.message || 'Unknown error'));
             console.error(err);
         }
     };
@@ -256,25 +272,18 @@ function Dashboard({ user, setUser }) {
                         {/* Posts Section */}
                         <div style={{ marginTop: '20px', width: '100%' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                                <h3 style={{ margin: 0, color: 'black' }}>Recent Posts</h3>
+                                <h3 style={{ margin: 0, color: 'black' }}>Recent Video Posts</h3>
                                 <button 
-                                    onClick={() => setShowRecorder(!showRecorder)}
-                                    style={{
-                                        background: '#4CAF50',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        padding: '8px 16px',
-                                        cursor: 'pointer'
-                                    }}
+                                    id="record-video-button"
+                                    onClick={matchState.partnerUsername ? () => setShowRecorder(prev => !prev) : () => window.alert("Please create a match before posting.")}
                                 >
-                                    {showRecorder ? 'Cancel' : '+ New Post'}
+                                    + New Video Post
                                 </button>
                             </div>
 
                             {/* Video Recorder */}
                             {showRecorder && (
-                                <RecordVideo onVideoSubmit={handleVideoSubmit} />
+                                <RecordVideo onVideoSubmit={handleVideoSubmit} onClose={() => setShowRecorder(false)} />
                             )}
 
                             {/* Posts List */}
@@ -285,11 +294,12 @@ function Dashboard({ user, setUser }) {
                             ) : posts.length === 0 ? (
                                 <p style={{ color: '#666' }}>No posts yet. Create your first post!</p>
                             ) : (
-                                <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                <div style={{ maxHeight: '390px', overflowY: 'auto' }}>
                                     {posts.map(post => (
                                         <PostCard 
                                             key={post._id} 
-                                            post={post} 
+                                            post={post}
+                                            partner={matchState.partnerUsername}
                                             onDelete={handleDeletePost}
                                         />
                                     ))}

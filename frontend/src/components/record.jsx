@@ -141,29 +141,15 @@ const Record = ({ onClose, onSubmit }) => {
 );
 }
 
-function RecordVideo({ onVideoSubmit }) {
-    const [showRecorder, setShowRecorder] = useState(false);
-    
+function RecordVideo({ onVideoSubmit, onClose }) {
     const handleVideoSubmit = (videoBlob, title) => {
-        if (onVideoSubmit) {
-            onVideoSubmit(videoBlob, title);
-        }
+        onVideoSubmit?.(videoBlob, title);
     };
-    
-    return (
-        <div>
-            {showRecorder && (
-                <Record 
-                    onClose={() => setShowRecorder(false)} 
-                    onSubmit={handleVideoSubmit}
-                />
-            )}
-            {!showRecorder && (
-                <button id="record-video-button" onClick={() => setShowRecorder(true)}>
-                    Record
-                </button>
-            )}
-        </div>
+    return(
+         <Record
+            onClose={onClose}
+            onSubmit={handleVideoSubmit}
+        />
     )
 }
 

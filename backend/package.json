@@ -11,9 +11,12 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.20.0",
     "mongoose": "^8.19.1",
+    "multer": "^2.0.2",
     "node-cron": "^4.2.1",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "react-circular-progressbar": "^2.2.0",
+    "resend": "^6.5.2"
   },
   "scripts": {
     "dev": "nodemon index.js"

@@ -12,12 +12,13 @@ var UserSchema = new Schema({
   proficiency: { type: String, required: false },
   streakCount: { type: Number, default: 0 },
   lastUploadDateId: { type: String, default: null },
-  level: { type: Number, default: 0 },
+  level: { type: Number, default: 1 },
   postedToday: { type: Boolean, required: false, default: false },
   currentMatchId: { type: mongoose.Schema.Types.ObjectId, ref: "Match", default: null },
   canMatch: { type: Boolean, required: false, default: null },
   isMatched: { type: Boolean, required: false, default: false },
   isNewGoogle: { type: Boolean, required: false, default: false },
+  canEmail: { type: Boolean, required: false, default: true },
   partnerUsername: {type: String, required: false, default: null }
 });
 
