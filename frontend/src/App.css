@@ -202,6 +202,7 @@ body {
 .survey-page {
   display:flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   height: 100vh;
 }
@@ -210,6 +211,8 @@ body {
   display: flex;
   flex-direction: column;
   width: 450px;
+  margin-top: 30px;
+  margin-bottom: 100px;
   align-items: center;
   border: 1px solid #eeeeee;
   background-color: #ffffff;
@@ -217,6 +220,12 @@ body {
   padding-bottom: 20px;
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#form-submit {
+  background-color: var(--top-bar-color);
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 .survey-form option {
   text-align:center;

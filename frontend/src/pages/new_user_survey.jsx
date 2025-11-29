@@ -46,7 +46,7 @@ function NewUserSurvey() {
             <div className="survey-page">
                 <h1 style={{color: "rgb(166,192,94"}}>Tell us about yourself</h1>
                 <form className="survey-form">
-                    <label for='name'>Create an username</label>
+                    <label for='name'>Enter a username</label>
                     <input
                         type='text'
                         id='name'
@@ -99,7 +99,7 @@ function NewUserSurvey() {
                     />
                     <label htmlFor="canMatch">I am willing to be matched with other users</label>
                     </div>
-                    <button onClick={handleSubmit} type="submit" style={{margin: "4px"}}>Submit</button>
+                    <button id="form-submit" onClick={handleSubmit} type="submit" style={{margin: "4px"}}>Submit</button>
                 </form>
             </div>
         </>
