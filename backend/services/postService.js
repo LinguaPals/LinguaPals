@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
+import Match from "../models/matchModel.js";
 import { createVideoPost } from "./videoService.js";
 import { handleSuccessfulPost } from "./progressService.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import { getPartnerDailyPost } from "../../frontend/src/services/postService.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -34,35 +37,20 @@ export const createPost = async (req, res) => {
     if (!payload) return res.status(400).json({ success: false, message: "Missing request body" });
 
     let post;
-    
-    if (payload.type === "video") {
-      // Video posts require a file upload
-      if (!req.file) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "Video file is required for video posts" 
-        });
-      }
-      
-      // Pass the file to createVideoPost
-      post = await createVideoPost({ 
-        userId: req.userId, 
-        body: payload, 
-        file: req.file 
-      });
-      
-    } else {
-      // 🔒 SECURITY FIX: Server-populate matchId for non-video posts
-      const user = await User.findById(req.userId).select('currentMatchId').lean();
-      const matchId = user?.currentMatchId || null;
-      
-      post = new Post({
-        ...payload,
-        userId: req.userId,      // Always use authenticated userId
-        matchId                  // Always use server-side matchId
-      });
-      await post.save();
-    }
+        if (payload.type === "video") {
+          post = await createVideoPost({ userId: req.userId, body: payload });
+        } else {
+          // 🔒 SECURITY FIX: Server-populate matchId for non-video posts
+          const user = await User.findById(req.userId).select('currentMatchId').lean();
+          const matchId = user?.currentMatchId || null;
+          
+          post = new Post({
+            ...payload,
+            userId: req.userId,      // Always use authenticated userId
+            matchId                  // Always use server-side matchId
+          });
+          await post.save();
+        }
 
     // Handle streak and level progression after successful post creation
     if (req.userId) {

@@ -8,6 +8,7 @@ function NewUserSurvey() {
     const [proficiency, setProficiency] = useState("");
     const [username, setUsername] = useState("");
     const [canMatch, setCanMatch] = useState(false);
+    const [canEmail, setCanEmail] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -21,7 +22,8 @@ function NewUserSurvey() {
             language: language,
             proficiency: proficiency,
             isNewGoogle: false,
-            canMatch: canMatch
+            canMatch: canMatch,
+            canEmail: canEmail
         })
         .then((response) => {
             console.log("Updated User:", response.data);
@@ -98,6 +100,16 @@ function NewUserSurvey() {
                         onChange={(e) => setCanMatch(e.target.checked)}
                     />
                     <label htmlFor="canMatch">I am willing to be matched with other users</label>
+                    </div>
+                    
+                    <div style={{margin: "4px 0"}}>
+                    <input 
+                        type="checkbox"
+                        checked={canEmail}
+                        style={{margin: "10px"}}
+                        onChange={(e) => setCanEmail(e.target.checked)}
+                    />
+                    <label htmlFor="canEmail">I am to recieve email notifications</label>
                     </div>
                     <button onClick={handleSubmit} type="submit" style={{margin: "4px"}}>Submit</button>
                 </form>

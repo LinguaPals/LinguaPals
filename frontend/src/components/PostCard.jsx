@@ -32,22 +32,24 @@ const PostCard = ({ post, onDelete, partner }) => {
             {post.status && ` • ${post.status}`}
           </small>
         </div>
+        <div style={{width: "50px"}}>
         {onDelete && (post?.userId?.toString() === localStorage.getItem('userID')) && (
-          <button 
-            onClick={() => onDelete(post._id)}
-            style={{
-              background: '#ff4444',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '5px 10px',
-              cursor: 'pointer',
-              fontSize: '12px'
-            }}
-          >
-            Delete
-          </button>
+            <button 
+              onClick={() => onDelete(post._id)}
+              style={{
+                background: '#ff4444',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '5px 10px',
+                cursor: 'pointer',
+                fontSize: '12px',
+              }}
+            >
+              Delete
+            </button>
         )}
+        </div>
       </div>
       
       {/* Video Player - only show if post has storage info */}

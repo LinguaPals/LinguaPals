@@ -13,7 +13,7 @@ html, body, #root {
 
 .content {
   display: flex;
-  width: 100%;
+  width: 100vw;
   height: 92.5vh;
   flex-direction: column; /* stack logo + cards vertically */
   align-items: center;    /* center children horizontally */
@@ -107,7 +107,7 @@ body {
   gap: 30px;
   margin: 20px;
   width: 90%;
-  max-width: 1200px;
+  height: 80%;
   align-items: stretch; /* ensure children stretch to same height */
 }
 
@@ -170,7 +170,7 @@ body {
 .card-footer {
   flex: 0 0 25%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
 }
 
@@ -186,7 +186,7 @@ body {
 
 .center-box { 
   width: 450px;
-  height: 560px;
+  height: 100%;
   border-radius: 30px;
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -385,13 +385,16 @@ select:hover{
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   padding: 20px;
   border-radius: 30px;
+  width: 25%;
+  height: 45%;
 }
+
 .loginButtons{
   display: flex;
   flex-direction: column;
   align-items: center;
-
 }
+
 .loginButtons input{
   align-content: center;
   background-color: #eeeeee;
