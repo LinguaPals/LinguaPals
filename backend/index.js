@@ -12,6 +12,8 @@ import notifyRoutes from "./routes/notify.js";
 import requireAuth from "./middleware/requireAuth.js";
 import scheduler from "./startup/scheduler.js";
 import passport from "passport";
+import { on } from "./lib/events.js";
+import { handleDailyStreakRollOver } from "./services/progressService.js";
 
 dotenv.config({});
 
@@ -29,6 +31,15 @@ app.use("/api/state", requireAuth, stateRoutes);
 app.use("/api/matches", requireAuth, matchRoutes);
 app.use("/api/notify", notifyRoutes);
 
+
+on("DAILY_WINDOW_OPEN", async () => {
+  try {
+    const results = await handleDailyStreakRollOver();
+    console.log("Daily streak rollover complete", results);
+  } catch (err) {
+    console.error("Daily streak rollover failed", err);
+  }
+});
 
 scheduler();
 
