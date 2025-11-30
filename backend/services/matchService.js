@@ -137,7 +137,8 @@ export const getMatchForUser = async (userId, weekTag = getWeekTag()) => {
     return null
   }
   const partnerId = String(match.userA) === String(userId) ? match.userB : match.userA
-  return { matchId: match._id, partnerId }
+  const partner = await User.findById(partnerId).select("username").lean()
+  return { matchId: match._id, partnerId, partnerUsername: partner?.username || null }
 }
 
 export const deleteMatchForUser = async (userId, weekTag = getWeekTag()) => {

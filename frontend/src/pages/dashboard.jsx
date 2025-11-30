@@ -54,7 +54,7 @@ function Dashboard({ user, setUser }) {
             const response = await getCurrentUser();
             if (response?.success && response?.data) {
                 const currentUser = response.data;
-                const matchData = (currentUser.currentMatchId || currentUser.partnerUsername || curentUser.isMatched)
+                const matchData = (currentUser.currentMatchId || currentUser.partnerUsername || currentUser.isMatched)
                     ? {
                         matchId: currentUser.currentMatchId ?? null,
                         partnerId: null,

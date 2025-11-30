@@ -7,7 +7,7 @@ function NewUserSurvey() {
     const [language, setLanguage] = useState("");
     const [proficiency, setProficiency] = useState("");
     const [username, setUsername] = useState("");
-    const [canMatch, setCanMatch] = useState(false);
+    const [canMatch, setCanMatch] = useState(true);
     const [canEmail, setCanEmail] = useState(false);
     const navigate = useNavigate();
 
