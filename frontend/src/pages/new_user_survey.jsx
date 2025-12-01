@@ -9,6 +9,7 @@ function NewUserSurvey() {
     const [username, setUsername] = useState("");
     const [canMatch, setCanMatch] = useState(true);
     const [canEmail, setCanEmail] = useState(false);
+    const [moderatorCode, setModeratorCode] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -22,6 +23,7 @@ function NewUserSurvey() {
             language: language,
             proficiency: proficiency,
             isNewGoogle: false,
+            moderatorCode: moderatorCode,
             canMatch: canMatch,
             canEmail: canEmail
         })
@@ -91,6 +93,15 @@ function NewUserSurvey() {
                         <option value="c1">-- C1: Can express ideas fluently and spontaneously --</option>
                         <option value="c2">-- C2: Near pefect fluency --</option>
                     </select>
+
+                    <label htmlFor="moderatorCode">Moderator Code</label>
+                    <input 
+                        type="password"
+                        style={{margin: "8px 0", padding: "6px" }}
+                        name="moderatorCode"
+                        id="moderatorCode"
+                        onChange={(e) => setModeratorCode(e.target.value)}
+                    />
                     
                     <div style={{margin: "4px 0"}}>
                     <input 

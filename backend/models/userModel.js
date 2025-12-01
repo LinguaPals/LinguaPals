@@ -20,7 +20,8 @@ var UserSchema = new Schema({
   isMatched: { type: Boolean, required: false, default: false },
   isNewGoogle: { type: Boolean, required: false, default: false },
   canEmail: { type: Boolean, required: false, default: true },
-  partnerUsername: {type: String, required: false, default: null }
+  partnerUsername: {type: String, required: false, default: null },
+  isModerator: { type: Boolean, required: false, default: false }
 });
 
 UserSchema.pre("save", function (next) {

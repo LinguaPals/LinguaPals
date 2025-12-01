@@ -3,6 +3,10 @@ import User from "../models/userModel.js";
 export const updateUser = async (req, res) => {
   try {
     const updates = req.body;
+    if (req.body?.moderatorCode && req.body.moderatorCode === process.env.MODERATOR_CODE) {
+      updates.isModerator = true;
+      delete updates.moderatorCode;
+    }
     const updatedUser = await User.findByIdAndUpdate(req.params.id, updates, { new: true });
     return res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {
