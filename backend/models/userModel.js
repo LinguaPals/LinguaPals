@@ -11,6 +11,7 @@ var UserSchema = new Schema({
   language: { type: String, required: false },
   proficiency: { type: String, required: false },
   streakCount: { type: Number, default: 0 },
+  videoCount: { type: Number, default: 0 },
   lastUploadDateId: { type: String, default: null },
   level: { type: Number, default: 1 },
   postedToday: { type: Boolean, required: false, default: false },

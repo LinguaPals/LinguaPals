@@ -92,7 +92,7 @@ export const createPost = async (req, res) => {
 
     await notifyPartnerOfPost({ actorUserId: req.userId, post });
 
-    // Handle streak and level progression after successful post creation
+    // Handle streak, level, and videoCount progression after successful post creation
     if (req.userId) {
       try {
         const progressData = await handleSuccessfulPost(req.userId);
@@ -101,7 +101,8 @@ export const createPost = async (req, res) => {
           data: post, 
           user: { 
             level: progressData.level,
-            streakCount: progressData.streakCount
+            streakCount: progressData.streakCount,
+            videoCount: progressData.videoCount
           } 
         });
       } catch (progressErr) {

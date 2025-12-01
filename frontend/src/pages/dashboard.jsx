@@ -25,7 +25,7 @@ function Dashboard({ user, setUser }) {
     const [showRecorder, setShowRecorder] = useState(false);
     const [newPost, setNewPost] = useState({ title: '', description: '' });
     const [matchState, setMatchState] = useState(initialMatchState);
-    const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, username: null });
+    const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, videoCount: 0, username: null });
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
 
@@ -84,6 +84,7 @@ function Dashboard({ user, setUser }) {
                 setUserStats({
                     streakCount: response.data.streakCount ?? 0,
                     level: response.data.level ?? 0,
+                    videoCount: response.data.videoCount ?? 0,
                     username: response.data.username ?? null
                 });
             } else {
@@ -99,7 +100,7 @@ function Dashboard({ user, setUser }) {
     const handleLogout = () => {
         setUser(null);
         setPosts([]);
-        setUserStats({ streakCount: 0, level: 0, username: null });
+        setUserStats({ streakCount: 0, level: 0, videoCount: 0, username: null });
         setMatchState(initialMatchState);
     };
 
@@ -150,11 +151,15 @@ function Dashboard({ user, setUser }) {
                 setPosts([response.data, ...posts]);
                 setNewPost({ title: '', description: '' });
                 setShowCreateForm(false);
-                // Update level if returned from backend
-                // Update streak if returned from backend
+                if (response.user?.level !== undefined) {
+                    setUserStats(prev => ({ ...prev, level: response.user.level }));
+                }
                 if (response.user?.streakCount !== undefined) {
-                        setUserStats(prev => ({ ...prev, streakCount: response.user.streakCount }));
-                    }
+                    setUserStats(prev => ({ ...prev, streakCount: response.user.streakCount }));
+                }
+                if (response.user?.videoCount !== undefined) {
+                    setUserStats(prev => ({ ...prev, videoCount: response.user.videoCount }));
+                }
             }
         } catch (err) {
             alert('Failed to create post');
@@ -182,6 +187,9 @@ function Dashboard({ user, setUser }) {
                 // Update streak if returned from backend
                 if (response.user?.streakCount !== undefined) {
                     setUserStats(prev => ({ ...prev, streakCount: response.user.streakCount }));
+                }
+                if (response.user?.videoCount !== undefined) {
+                    setUserStats(prev => ({ ...prev, videoCount: response.user.videoCount }));
                 }
             }
         } catch (err) {
@@ -337,7 +345,7 @@ function Dashboard({ user, setUser }) {
                         />
                         <Card
                             title="Level"
-                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Number of 5-day streaks accumulated'}
+                            footer={statsLoading ? 'Fetching...' : statsError ? statsError : 'Level +1 every 5 videos posted'}
                             children={<div style={{width: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto"}}><CircularProgressbar
                                 value={userStats.level}
                                 text={userStats.level}
