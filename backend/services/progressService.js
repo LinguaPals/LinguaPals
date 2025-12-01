@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { getDateId } from "../utils/dateIds.js";
 
 /**
  * Handles the streak and progress logic when a user successfully posts.
@@ -6,7 +7,7 @@ import User from "../models/userModel.js";
  * Updated behavior:
  * - Every post increments videoCount.
  * - Every time videoCount % 5 === 0, level increases by 1 (never decreases).
- * - First post of the day also increments streakCount and sets postedToday.
+ * - First post of the day also increments streakCount (based on lastUploadDateId) and marks postedToday.
  *
  * @param {string} userId - The MongoDB ObjectId of the user
  * @returns {Promise<{streakCount: number, level: number, postedToday: boolean, videoCount: number}>}
@@ -24,11 +25,26 @@ export const handleSuccessfulPost = async (userId) => {
     user.level = Math.max(1, (user.level ?? 1) + 1);
   }
   
-  // Only update streak if this is the first post of the day
-  if (!user.postedToday) {
+  const todayId = getDateId();
+  const lastUploadDateId = user.lastUploadDateId;
+  const firstPostToday = lastUploadDateId !== todayId;
+
+  if (firstPostToday) {
+    if (lastUploadDateId) {
+      const lastUploadDate = new Date(`${lastUploadDateId}T00:00:00Z`);
+      const todayDate = new Date(`${todayId}T00:00:00Z`);
+      const diffDays = Math.floor((todayDate - lastUploadDate) / 86400000);
+
+      if (diffDays > 1) {
+        user.streakCount = 0;
+      }
+    }
+
     user.streakCount = (user.streakCount ?? 0) + 1;
-    user.postedToday = true;
+    user.lastUploadDateId = todayId;
   }
+
+  user.postedToday = true;
 
   await user.save();
   
