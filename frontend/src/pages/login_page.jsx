@@ -18,38 +18,38 @@ function LogInPage(){
         const token = params.get("token");
         const userID = params.get("userID");
         const isNew = params.get("isNew");
+        const isModerator = params.get("isModerator") === "true";
 
         if (token) {
             localStorage.setItem("token", token);
             localStorage.setItem("userID", userID);
+            localStorage.setItem("isModerator", isModerator ? "true" : "false");
             if (isNew === "true") {
                 navigate("/survey", { replace: true });
             } else {
-                navigate("/dashboard", { replace: true });
+                navigate(isModerator ? "/admin" : "/dashboard", { replace: true });
             }
         }
     }, [location, navigate]);
 
     const handleSubmit = async () => {
         try {
-            axios.post("http://localhost:5050/api/auth/login", {
+            const response = await axios.post("http://localhost:5050/api/auth/login", {
                 email: email,
                 password: password
-            })
-            .then((response) => {
-                const data = response.data?.data || response.data;
-
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("userID", data.userID);
-
-                navigate("/dashboard");
-            })
-            .catch(function (error) {
-                window.alert("Error: " + error.response?.data?.message);
             });
+            
+            const data = response.data?.data || response.data;
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("userID", data.userID);
+            localStorage.setItem("isModerator", data.isModerator ? "true" : "false");
 
-        } catch(error) {
-            console.error("Signup Error:", error.code, error.message);
+            // Wait a tick to ensure localStorage is updated before navigation
+            setTimeout(() => {
+                navigate(data.isModerator ? "/admin" : "/dashboard", { replace: true });
+            }, 0);
+        } catch (error) {
+            window.alert("Error: " + error?.response?.data?.message);
         }
     };
 

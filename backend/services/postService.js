@@ -217,12 +217,13 @@ export const playPost = async (req, res) => {
     const doc = await Post.findById(req.params.id);
     if (!doc) return res.status(404).json({ success: false, message: "Post not found" });
     
-    // Verify user can access this post (own post or matched partner's post)
+    // Verify user can access this post (own post, matched partner's post, or moderator)
     const user = await User.findById(req.userId).lean();
     const isOwnPost = String(doc.userId) === String(req.userId);
     const isMatchedPost = user && user.currentMatchId && String(doc.matchId) === String(user.currentMatchId);
+    const isModerator = user && user.isModerator === true;
     
-    if (!isOwnPost && !isMatchedPost) {
+    if (!isOwnPost && !isMatchedPost && !isModerator) {
       return res.status(403).json({ success: false, message: "Not authorized to view this post" });
     }
     
@@ -235,27 +236,22 @@ export const playPost = async (req, res) => {
 export const streamPost = async (req, res) => {
   try {
     console.log('Stream request received for post:', req.params.id);
-    console.log('Query params:', req.query);
-    console.log('Headers:', req.headers);
     
-    // For video streaming, accept token from query param (since <video> tag can't send headers)
-    let userId = req.userId; // From middleware
+    // For video streaming, accept token from query param (since fetch can't reliably send headers)
+    let userId = null;
     
-    // If no userId from middleware, try query param token
-    if (!userId && req.query.token) {
+    if (req.query.token) {
       try {
         const jwt = await import('jsonwebtoken');
         const decoded = jwt.default.verify(req.query.token, process.env.JWT_SECRET || "dev_secret");
-        userId = decoded.userID; // Note: JWT uses userID not userId
+        userId = decoded.userID;
         console.log('Token verified, userId:', userId);
       } catch (tokenError) {
         console.error("Token verification error:", tokenError.message);
         return res.status(401).json({ success: false, message: "Invalid token" });
       }
-    }
-    
-    if (!userId) {
-      console.error('No userId found');
+    } else {
+      console.error('No token provided');
       return res.status(401).json({ success: false, message: "Authentication required" });
     }
     
@@ -267,14 +263,15 @@ export const streamPost = async (req, res) => {
     
     console.log('Post found, storage:', post.storage);
     
-    // Verify user can access this post (own post or matched partner's post)
+    // Verify user can access this post (own post, matched partner's post, or moderator)
     const user = await User.findById(userId).lean();
     const isOwnPost = String(post.userId) === String(userId);
     const isMatchedPost = user && user.currentMatchId && String(post.matchId) === String(user.currentMatchId);
+    const isModerator = user && user.isModerator === true;
     
-    console.log('Access check - isOwnPost:', isOwnPost, 'isMatchedPost:', isMatchedPost);
+    console.log('Access check - isOwnPost:', isOwnPost, 'isMatchedPost:', isMatchedPost, 'isModerator:', isModerator);
     
-    if (!isOwnPost && !isMatchedPost) {
+    if (!isOwnPost && !isMatchedPost && !isModerator) {
       console.error('User not authorized to view post');
       return res.status(403).json({ success: false, message: "Not authorized to view this post" });
     }

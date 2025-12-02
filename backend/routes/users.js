@@ -4,6 +4,6 @@ import requireAuth from "../middleware/requireAuth.js";
 import { updateUser, getCurrentUser } from "../services/userService.js";
 
 router.get("/me", requireAuth, getCurrentUser);
-router.put("/:id", updateUser);
+router.put("/:id", requireAuth, updateUser);
 
 export default router;

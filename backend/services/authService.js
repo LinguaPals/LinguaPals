@@ -35,7 +35,7 @@ export const signUp = async (req, res) => {
         const token = jwt.sign({userID: newUser._id.toString()}, process.env.JWT_SECRET, { expiresIn: '1h'});
 
         // returns the new user's id and JWT token
-        return res.status(201).json({success: true, data: {token: token, userID: newUser._id.toString()}});
+        return res.status(201).json({success: true, data: {token: token, userID: newUser._id.toString(), isModerator: newUser.isModerator === true}});
     } catch(error) {
         console.error("Error: ", error.message);
         return res.status(500).json({success: false, message: "Server Error"});
@@ -67,7 +67,7 @@ export const login = async (req, res) => {
         const token = jwt.sign({userID: existing._id.toString()}, process.env.JWT_SECRET, { expiresIn: '1h'});
 
         // return user's id upon successful password
-        return res.status(200).json({ success: true, data: {token: token, userID: existing._id.toString()}});
+        return res.status(200).json({ success: true, data: {token: token, userID: existing._id.toString(), isModerator: existing.isModerator === true}});
         });
     } catch(error) {
         console.error("Error: ", error.message);
@@ -138,5 +138,6 @@ export const googleAuth = passport.authenticate('google', {
 export const googleAuthCallback = (req, res) => {
     const token = jwt.sign({userID: req.user._id.toString()}, process.env.JWT_SECRET, { expiresIn: '1h'})
 
-    res.redirect(`http://localhost:5173/login?token=${token}&userID=${req.user._id.toString()}&isNew=${req.user.isNewGoogle}`);
+    const isModerator = req.user.isModerator ? "true" : "false";
+    res.redirect(`http://localhost:5173/login?token=${token}&userID=${req.user._id.toString()}&isNew=${req.user.isNewGoogle}&isModerator=${isModerator}`);
 };

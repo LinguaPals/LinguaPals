@@ -9,6 +9,7 @@ import userRoutes from "./routes/users.js";
 import stateRoutes from "./routes/state.js";
 import matchRoutes from "./routes/matches.js";
 import notifyRoutes from "./routes/notify.js";
+import adminRoutes from "./routes/admin.js";
 import requireAuth from "./middleware/requireAuth.js";
 import scheduler from "./startup/scheduler.js";
 import passport from "passport";
@@ -30,6 +31,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/state", requireAuth, stateRoutes);
 app.use("/api/matches", requireAuth, matchRoutes);
 app.use("/api/notify", notifyRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 on("DAILY_WINDOW_OPEN", async () => {

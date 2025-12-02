@@ -18,14 +18,18 @@ function SignInPage (){
         const token = params.get("token");
         const userID = params.get("userID");
         const isNew = params.get("isNew");
+        const isModerator = params.get("isModerator") === "true";
 
         if (token) {
             localStorage.setItem("token", token);
             localStorage.setItem("userID", userID);
+            localStorage.setItem("isModerator", isModerator ? "true" : "false");
             if (isNew === "true") {
                 navigate("/survey", { replace: true });
             } else {
-                navigate("/dashboard", { replace: true });
+                setTimeout(() => {
+                    navigate(isModerator ? "/admin" : "/dashboard", { replace: true });
+                }, 0);
             }
         }
     }, [location, navigate]);
@@ -39,6 +43,7 @@ function SignInPage (){
             .then((response) => {
                 localStorage.setItem("token", response.data.data.token);
                 localStorage.setItem("userID", response.data.data.userID);
+                localStorage.setItem("isModerator", response.data.data.isModerator ? "true" : "false");
                 console.log("User signed up");
                 navigate("/survey");
             })

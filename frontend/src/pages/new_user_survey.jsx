@@ -12,37 +12,43 @@ function NewUserSurvey() {
     const [moderatorCode, setModeratorCode] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         const userID = localStorage.getItem("userID");
+        const token = localStorage.getItem("token");
         console.log(userID);
 
-        axios.put(`http://localhost:5050/api/users/${userID}`, {
-            username: username,
-            language: language,
-            proficiency: proficiency,
-            isNewGoogle: false,
-            moderatorCode: moderatorCode,
-            canMatch: canMatch,
-            canEmail: canEmail
-        })
-        .then((response) => {
+        try {
+            const response = await axios.put(`http://localhost:5050/api/users/${userID}`, {
+                username: username,
+                language: language,
+                proficiency: proficiency,
+                isNewGoogle: false,
+                moderatorCode: moderatorCode,
+                canMatch: canMatch,
+                canEmail: canEmail
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            
             console.log("Updated User:", response.data);
             localStorage.setItem("username", username);
-            navigate("/dashboard");
-        })
-        .catch((error) => {
-    console.error("Full error:", error);
-
-    const msg =
-        error?.response?.data?.message ||   // backend error message
-        error?.message ||                   // axios/network message
-        "Unknown error occurred";
-
-    alert(msg);
-});
-
+            const updatedUser = response.data?.data;
+            const isModerator = updatedUser?.isModerator === true;
+            localStorage.setItem("isModerator", isModerator ? "true" : "false");
+            
+            // Wait a tick to ensure localStorage is updated before navigation
+            setTimeout(() => {
+                navigate(isModerator ? "/admin" : "/dashboard", { replace: true });
+            }, 0);
+        } catch (error) {
+            console.error("Full error:", error);
+            const msg = error?.response?.data?.message || error?.message || "Unknown error occurred";
+            alert(msg);
+        }
     }
 
     return (
