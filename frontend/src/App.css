@@ -379,6 +379,7 @@ select:hover{
   color: var(--top-bar-color);
   text-align: center;
 }
+
 .welcomePage {
   display: flex;
   flex-direction: column;
@@ -394,8 +395,6 @@ select:hover{
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   padding: 20px;
   border-radius: 30px;
-  width: 25%;
-  height: 45%;
 }
 
 .loginButtons{

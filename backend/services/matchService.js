@@ -1,5 +1,6 @@
 import Match from "../models/matchModel.js"
 import User from "../models/userModel.js"
+import Post from "../models/postModel.js"
 import { getWeekTag } from "../utils/dateIds.js"
 
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] } return a }
@@ -168,6 +169,7 @@ export const deleteMatchForUser = async (userId, weekTag = getWeekTag()) => {
   }
   await user.save()
   await Match.deleteOne({ _id: match._id })
+  await Post.deleteMany({ matchId: match._id });
   return { success: true, deletedMatchId: match._id, partnerId }
 }
 

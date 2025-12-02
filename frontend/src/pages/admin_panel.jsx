@@ -44,7 +44,7 @@ function AdminPanel() {
             await deletePostAsModerator(postId);
             setPosts(posts.filter(p => p._id !== postId));
         } catch (err) {
-            alert('Failed to delete post');
+            console.error('Error: ' + err);
         }
     };
 
@@ -55,7 +55,7 @@ function AdminPanel() {
             setUsers(users.filter(u => u._id !== userId));
             setPosts(posts.filter(p => String(p.userId?._id) !== String(userId)));
         } catch (err) {
-            alert('Failed to delete user');
+            console.error('Error: ' + err);
         }
     };
 
@@ -69,7 +69,7 @@ function AdminPanel() {
     return (
         <div style={{ padding: '20px', minHeight: '100vh', background: '#f5f5f5' }}>
             <div style={{ marginBottom: '20px' }}>
-                <h1 style={{ margin: '0 0 10px 0' }}>Admin Panel</h1>
+                <h1 style={{ margin: '0 0 10px 0', color: 'rgb(166,192,94)' }}>Admin Panel</h1>
                 <button onClick={handleLogout} style={{ padding: '10px 20px', cursor: 'pointer' }}>
                     Logout
                 </button>
@@ -108,7 +108,7 @@ function AdminPanel() {
                                         }}
                                     >
                                         <div style={{ flex: 1, minWidth: 0 }}>
-                                            <h4 style={{ margin: '0 0 4px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <h4 style={{ margin: '0 0 4px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'black'}}>
                                                 {user.username || 'No username'} {user.isModerator && <span style={{ color: 'green' }}>👑</span>}
                                             </h4>
                                             <p style={{ margin: 0, color: '#666', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -163,7 +163,7 @@ function AdminPanel() {
                                         }}
                                     >
                                         <div style={{ flex: 1, minWidth: 0 }}>
-                                            <h4 style={{ margin: '0 0 4px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <h4 style={{ margin: '0 0 4px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'black' }}>
                                                 {post.title || 'Untitled'}
                                             </h4>
                                             <p style={{ margin: '0 0 4px 0', color: '#666', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

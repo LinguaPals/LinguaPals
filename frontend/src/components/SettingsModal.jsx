@@ -22,6 +22,10 @@ export default function SettingsModal({ onClose }) {
             proficiency: proficiency,
             canMatch: canMatch,
             canEmail: canEmail,
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
         })
         .then((response) => {
             console.log("Updated User:", response.data);
