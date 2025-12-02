@@ -170,7 +170,7 @@ body {
 .card-footer {
   flex: 0 0 25%;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 }
 

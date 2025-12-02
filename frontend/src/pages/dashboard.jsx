@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import TopBar from '../components/top_bar.jsx'
 import Card from '../components/card.jsx'
 import BottomBar from '../components/bottom_bar.jsx'
@@ -28,6 +28,7 @@ function Dashboard({ user, setUser }) {
     const [userStats, setUserStats] = useState({ streakCount: 0, level: 0, videoCount: 0, username: null });
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
+    const postsListRef = useRef(null);
 
     const applyMatchState = (matchData) => {
         if (!matchData) {
@@ -261,7 +262,7 @@ function Dashboard({ user, setUser }) {
 
             <div className="content">
                 <div className="dashboard-layout">
-                    <div className="center-box">
+                    <div className="center-box" style={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                         {!matchState.partnerUsername ? (
                         <button className="match-button"
                         onClick={matchUser}>
@@ -275,10 +276,10 @@ function Dashboard({ user, setUser }) {
                             </button>
                         </>       
                         )}
-                        <hr style={{ flex: 1, border: "none", borderTop: "1px solid lightgray", margin: "0px"}}/>
+                        <hr style={{ width: '100%', border: 'none', borderTop: '1px solid lightgray', margin: '12px 0' }}/>
                         
                         {/* Posts Section */}
-                        <div style={{ marginTop: '20px', width: '100%' }}>
+                        <div style={{ marginTop: '2.5px', width: '100%', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
                                 <h3 style={{ margin: 0, color: 'black' }}>Recent Video Posts</h3>
                                 <button 
@@ -302,7 +303,7 @@ function Dashboard({ user, setUser }) {
                             ) : posts.length === 0 ? (
                                 <p style={{ color: '#666' }}>No posts yet. Create your first post!</p>
                             ) : (
-                                <div style={{ maxHeight: '390px', overflowY: 'auto' }}>
+                                <div ref={postsListRef} style={{ overflowY: 'auto', flex: 1, width: '100%', paddingRight: '8px' }}>
                                     {posts.map(post => (
                                         <PostCard 
                                             key={post._id} 

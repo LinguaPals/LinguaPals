@@ -6,7 +6,6 @@ import axios from 'axios'
 export default function SettingsModal({ onClose }) {
     const [language, setLanguage] = useState("");
     const [proficiency, setProficiency] = useState("");
-    const [username, setUsername] = useState("");
     const [canMatch, setCanMatch] = useState(false);
     const [canEmail, setCanEmail] = useState(false);
     const navigate = useNavigate();
@@ -29,7 +28,6 @@ export default function SettingsModal({ onClose }) {
         })
         .then((response) => {
             console.log("Updated User:", response.data);
-            localStorage.setItem("username", username);
             onClose?.();
             navigate("/dashboard");
         })
@@ -96,7 +94,7 @@ export default function SettingsModal({ onClose }) {
                         style={{margin: "10px"}}
                         onChange={(e) => setCanEmail(e.target.checked)}
                     />
-                    <label htmlFor="canEmail">I am to recieve email notifications</label>
+                    <label htmlFor="canEmail">I am willing to recieve email notifications</label>
                     </div>
                 <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                     <button type="submit" style={{ margin: "4px" }}>Submit</button>
