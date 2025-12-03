@@ -13,9 +13,10 @@ export default function SettingsModal({ onClose }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         
+        // finds current user via ID
         const userID = localStorage.getItem("userID");
-        console.log(userID);
 
+        // updates existing user with changes made in modal
         axios.put(`http://localhost:5050/api/users/${userID}`, {
             language: language,
             proficiency: proficiency,
@@ -26,8 +27,7 @@ export default function SettingsModal({ onClose }) {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-        .then((response) => {
-            console.log("Updated User:", response.data);
+        .then(() => {
             onClose?.();
             navigate("/dashboard");
         })

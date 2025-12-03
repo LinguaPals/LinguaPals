@@ -9,10 +9,9 @@ export const sendEmail = async({ to, subject, body, canEmail }) => {
                 subject: `${subject}`, 
                 html: `<p>${body}</p>` 
             }); 
-            console.log("Email sent successfully.");
         }
     } catch(err) { 
-        console.log(err); 
+        console.error(err); 
         throw err; 
     } 
 };

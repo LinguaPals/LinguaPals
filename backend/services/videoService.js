@@ -58,7 +58,6 @@ export const createVideoPost = async ({ userId, body, file }) => {
     
     // Cleanup: If GridFS upload succeeded but Post save failed, delete the file
     if (storageInfo?.storageId && !postId) {
-      console.log("Cleaning up orphaned GridFS file:", storageInfo.storageId);
       try {
         await storage.remove(storageInfo.storageId);
       } catch (cleanupError) {

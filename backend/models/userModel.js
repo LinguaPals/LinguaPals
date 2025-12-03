@@ -24,6 +24,7 @@ var UserSchema = new Schema({
   isModerator: { type: Boolean, required: false, default: false }
 });
 
+// saves the user schema and encrypts password
 UserSchema.pre("save", function (next) {
   var user = this;
   if (!user.isModified("password")) return next();

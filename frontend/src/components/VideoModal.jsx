@@ -33,18 +33,14 @@ const VideoModal = ({ postId, mimeType, onClose }) => {
     try {
       setLoading(true);
       setError(null);
-      
-      console.log('Starting video fetch for modal, postId:', postId);
-      
+            
       // First, fetch video metadata with auth header
       const metadataResponse = await fetch(`${API_BASE_URL}/posts/${postId}/play`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
-      console.log('Metadata response status:', metadataResponse.status);
-      
+            
       if (!metadataResponse.ok) {
         throw new Error(`Metadata fetch failed: ${metadataResponse.status}`);
       }
@@ -54,27 +50,17 @@ const VideoModal = ({ postId, mimeType, onClose }) => {
       if (!metadataData.success) {
         throw new Error(metadataData.message || 'Failed to fetch video metadata');
       }
-      
-      console.log('Video metadata fetched:', metadataData.data);
-      
+            
       // Now fetch the actual video file as a blob
       const streamUrl = `${API_BASE_URL}/posts/${postId}/stream?token=${token}`;
-      console.log('Fetching video stream from:', streamUrl);
       
       const videoResponse = await fetch(streamUrl);
-      
-      console.log('Video response status:', videoResponse.status);
-      console.log('Video response headers:', {
-        contentType: videoResponse.headers.get('content-type'),
-        contentLength: videoResponse.headers.get('content-length')
-      });
       
       if (!videoResponse.ok) {
         throw new Error(`Video fetch failed: ${videoResponse.status}`);
       }
       
       const videoBlob = await videoResponse.blob();
-      console.log('Video blob received, size:', videoBlob.size, 'type:', videoBlob.type);
       
       if (videoBlob.size === 0) {
         throw new Error('Received empty video blob');
@@ -82,7 +68,6 @@ const VideoModal = ({ postId, mimeType, onClose }) => {
       
       // Create a blob URL for the video
       const blobUrl = URL.createObjectURL(videoBlob);
-      console.log('Blob URL created:', blobUrl);
       
       setVideoUrl(blobUrl);
       setLoading(false);

@@ -18,7 +18,7 @@ export const requestMatch = async () => {
     });
     return response.data;
   } catch (error) {
-    console.log('Error creating match:', error);
+    console.error('Error creating match:', error);
     throw error;
   }
 }
@@ -31,20 +31,20 @@ export const getMatchForUsers = async () => {
     });
     return response.data;
   } catch(error) {
-    console.log('Error matching user:', error);
+    console.error('Error matching user:', error);
     throw error;
   }
 };
 
+// delete current match
 export const deleteMatchForUsers = async () => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/matches/delete-match`, { 
       headers: getAuthHeaders() 
     });
-    console.log("Deleted successfully");
     return response.data;
   } catch (error) {
-    console.log("Error deleting match", error);
+    console.error("Error deleting match", error);
     throw error;
   }
 }

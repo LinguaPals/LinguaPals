@@ -44,7 +44,6 @@ function SignInPage (){
                 localStorage.setItem("token", response.data.data.token);
                 localStorage.setItem("userID", response.data.data.userID);
                 localStorage.setItem("isModerator", response.data.data.isModerator ? "true" : "false");
-                console.log("User signed up");
                 navigate("/survey");
             })
             .catch(function (error) {

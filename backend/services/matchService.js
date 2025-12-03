@@ -6,8 +6,6 @@ import { getWeekTag } from "../utils/dateIds.js"
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] } return a }
 
 export const requestMatchForUser = async (userId, weekTag = getWeekTag()) => {
-  console.log("DEBUG: requestMatchForUser called for user:", userId)
-
   // 1. Load the user
   const user = await User.findById(userId)
   if (!user) return { matched: false, waiting: false }
@@ -131,10 +129,8 @@ export const generateAndPublish = async (weekTag = getWeekTag()) => {
 }
 
 export const getMatchForUser = async (userId, weekTag = getWeekTag()) => {
-  console.log("Searching for match")
   const match = await Match.findOne({ weekTag, $or: [{ userA: userId }, { userB: userId }] }).lean()
   if (!match) {
-    console.log("Couldn't find match")
     return null
   }
   const partnerId = String(match.userA) === String(userId) ? match.userB : match.userA

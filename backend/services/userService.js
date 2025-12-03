@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 
+// updates user
 export const updateUser = async (req, res) => {
   try {
     const targetUserId = req.params.id;
@@ -12,6 +13,7 @@ export const updateUser = async (req, res) => {
     delete updates.moderatorCode;
     delete updates.isModerator;
 
+    // determines if code passed in is equal to moderator code, and sets isModerator accordingly
     if (providedCode) {
       if (!process.env.MODERATOR_CODE) {
         return res.status(500).json({ success: false, message: "Moderator code not configured" });
@@ -34,6 +36,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
+// retrieves current user 
 export const getCurrentUser = async (req, res) => {
   try {
     if (!req.userId) return res.status(401).json({ success: false, message: "Unauthorized" });
