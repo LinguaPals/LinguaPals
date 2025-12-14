@@ -126,7 +126,7 @@ function NewUserSurvey() {
                         style={{margin: "10px"}}
                         onChange={(e) => setCanEmail(e.target.checked)}
                     />
-                    <label htmlFor="canEmail">I am to recieve email notifications</label>
+                    <label htmlFor="canEmail">I agree to recieve email notifications</label>
                     </div>
                     <button id="form-submit" onClick={handleSubmit} type="submit" style={{margin: "4px"}}>Submit</button>
                 </form>
