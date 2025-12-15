@@ -8,6 +8,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { getPosts, createPost, deletePost, requestMatch, deleteMatchForUsers } from '../services/postService.js'
 import { getCurrentUser, getUserState } from '../services/userService.js'
+import ChatBox from '../components/friendChat.jsx';
 
 const initialMatchState = {
     isMatched: false,
@@ -360,6 +361,7 @@ function Dashboard({ user, setUser }) {
                     </div>
                 </div>
             </div>
+            {matchState.isMatched && <ChatBox />}
     </>
 )}
 export default Dashboard;

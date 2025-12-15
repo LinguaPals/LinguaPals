@@ -35,7 +35,6 @@ router.post("/publish", async (req, res) => {
 });
 
 router.delete("/delete-match", async (req, res) => {
-  console.log("Yo im in the delete-match func");
   if (!req.userId) {
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
