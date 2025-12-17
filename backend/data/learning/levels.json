@@ -1,0 +1,43 @@
+[
+    {
+      "levelId": 1,
+      "levelName": "Foundations I",
+      "note": "blend",
+      "totalWordCount": 385,
+      "balls": [
+        { "ballId": 5,  "ballName": "Clothing – Everyday – Part 1",                     "wordCount": 40 },
+        { "ballId": 10, "ballName": "Food – Basics – Part 1",                           "wordCount": 40 },
+        { "ballId": 12, "ballName": "Food – Fruits & Vegetables – Part 1",              "wordCount": 35 },
+        { "ballId": 14, "ballName": "Food – Meats & Proteins – Part 1",                 "wordCount": 25 },
+        { "ballId": 16, "ballName": "Food – Drinks – Part 1",                           "wordCount": 35 },
+        { "ballId": 18, "ballName": "Food – Desserts & Snacks – Part 1",                "wordCount": 25 },
+        { "ballId": 20, "ballName": "Animals – Pets – Part 1",                          "wordCount": 30 },
+        { "ballId": 29, "ballName": "Colors – Part 1",                                  "wordCount": 35 },
+        { "ballId": 31, "ballName": "Shapes – Part 1",                                  "wordCount": 25 },
+        { "ballId": 1,  "ballName": "Body Parts – Part 1 – Part 1",                     "wordCount": 35 },
+        { "ballId": 2,  "ballName": "Body Parts – Part 1 – Part 2",                     "wordCount": 35 },
+        { "ballId": 22, "ballName": "Animals – Farm Animals – Part 1",                  "wordCount": 25 }
+      ]
+    },
+    {
+      "levelId": 2,
+      "levelName": "Foundations II",
+      "note": "blend",
+      "totalWordCount": 327,
+      "balls": [
+        { "ballId": 6,  "ballName": "Clothing – Everyday – Part 2",                     "wordCount": 40 },
+        { "ballId": 11, "ballName": "Food – Basics – Part 2",                           "wordCount": 37 },
+        { "ballId": 13, "ballName": "Food – Fruits & Vegetables – Part 2",              "wordCount": 28 },
+        { "ballId": 15, "ballName": "Food – Meats & Proteins – Part 2",                 "wordCount": 19 },
+        { "ballId": 17, "ballName": "Food – Drinks – Part 2",                           "wordCount": 27 },
+        { "ballId": 19, "ballName": "Food – Desserts & Snacks – Part 2",                "wordCount": 20 },
+        { "ballId": 21, "ballName": "Animals – Pets – Part 2",                          "wordCount": 22 },
+        { "ballId": 23, "ballName": "Animals – Farm Animals – Part 2",                  "wordCount": 21 },
+        { "ballId": 24, "ballName": "Animals – Wild Animals – Part 1",                  "wordCount": 30 },
+        { "ballId": 25, "ballName": "Animals – Wild Animals – Part 2",                  "wordCount": 30 },
+        { "ballId": 26, "ballName": "Animals – Wild Animals – Part 3",                  "wordCount": 22 },
+        { "ballId": 30, "ballName": "Colors – Part 2",                                  "wordCount": 31 }
+      ]
+    }
+  ]
+  
