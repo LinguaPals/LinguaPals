@@ -29,3 +29,21 @@ export const postMessage = async (req, res) => {
     }
 };
 
+export const getMatchMessages = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select("-password");
+        if(!user) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+        const matchId = user.currentMatchId;
+        if(!matchId)
+            return res.status(400).json({ success: false, message: "No current match to send message to" });
+
+        const messages = await Message.find({ matchId }).sort({ createdAt: 1});
+        res.status(201).json({ success: true, data: messages });
+    } catch (error) {
+        console.error("Error fetching chat messages", error);
+        res.status(500).json({ success: false, message: "Failed to fetch messages" });
+    }
+}
+

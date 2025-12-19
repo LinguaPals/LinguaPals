@@ -642,3 +642,63 @@ select:hover{
   .login-panel{flex-basis:60%;padding:1rem}
   .main-box.small{width:320px}
 }
+
+#chat-button {
+  position: fixed;
+  bottom: 6px;
+  right: 6px;
+  z-indez: 1000;
+  border-radius: 0;
+  background-color: blue;
+}
+
+.chat-box {
+  position: fixed;
+  top: 7.5vh;
+  right: 0px;
+  bottom: 0px;
+  width: 25vw;
+  height:100vh;
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+  border: 1px solid blue;
+  background-color: grey;
+}
+
+
+.user-input {
+  position: fixed;
+  bottom: 0px;
+  border: 2px 
+}
+.user-input textarea {
+  width: 25vw;
+  height: 30px;
+}
+.user-input button {
+  background-color: blue;
+}
+
+#close-chat {
+  width: 50px;
+  background-color: rgb(222, 84, 84);
+  border-radius: 0px;
+  border: 2px solid rgb(222,84,84);
+}
+
+.chat-message-username {
+  align-items: left;
+  
+
+}
+
+.chat-message-content {
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.chat-messageown {
+  background-color: blue;
+}

@@ -360,8 +360,9 @@ function Dashboard({ user, setUser }) {
                         />
                     </div>
                 </div>
+                {matchState.isMatched && <ChatBox username={userStats.username} />}
             </div>
-            {matchState.isMatched && <ChatBox />}
+            
     </>
 )}
 export default Dashboard;

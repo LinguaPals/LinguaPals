@@ -24,3 +24,15 @@ export const postMessage = async (text) => {
         throw error;
     }
 }
+
+export const getMatchMessages = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/messages/retrieve`, {
+            headers: getAuthHeaders(),
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error retrieving messages:', error);
+        throw error;
+    }
+}
