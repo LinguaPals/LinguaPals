@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import { mapUserLanguageToDictCode, mapDictCodeToLanguageName } from "../utils/learning/languageMapping.js";
 
 // updates user
 export const updateUser = async (req, res) => {
@@ -47,3 +48,36 @@ export const getCurrentUser = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+
+ export const getLearningLanguage = async (req, res) => {
+   try {
+     if (!req.userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+ 
+     const user = await User.findById(req.userId).select("language");
+     if (!user) return res.status(404).json({ success: false, message: "User not found" });
+ 
+     // Requirement: legacy accounts default to Spanish
+     if (!user.language) {
+       return res.status(200).json({
+         success: true,
+         data: {
+           languageName: "Spanish",
+           langCode: "es"
+         }
+       });
+     }
+ 
+     const langCode = mapUserLanguageToDictCode(user.language);
+     const languageName = mapDictCodeToLanguageName(langCode) || user.language;
+ 
+     return res.status(200).json({
+       success: true,
+       data: {
+         languageName,
+         langCode
+       }
+     });
+   } catch (error) {
+     return res.status(500).json({ success: false, message: "Server Error" });
+   }
+ };

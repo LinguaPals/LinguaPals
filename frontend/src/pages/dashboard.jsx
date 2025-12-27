@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TopBar from '../components/top_bar.jsx'
 import Card from '../components/card.jsx'
 import BottomBar from '../components/bottom_bar.jsx'
@@ -29,6 +30,8 @@ function Dashboard({ user, setUser }) {
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
     const postsListRef = useRef(null);
+
+    const navigate = useNavigate();
 
     const applyMatchState = (matchData) => {
         if (!matchData) {
@@ -276,6 +279,13 @@ function Dashboard({ user, setUser }) {
                             </button>
                         </>       
                         )}
+                        <button
+                            className="match-button"
+                            onClick={() => navigate('/learn')}
+                            style={{ marginTop: '8px' }}
+                        >
+                            Learn
+                        </button>
                         <hr style={{ width: '100%', border: 'none', borderTop: '1px solid lightgray', margin: '12px 0' }}/>
                         
                         {/* Posts Section */}

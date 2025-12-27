@@ -10,6 +10,8 @@ const getAuthHeaders = () => {
   };
 };
 
+let learningLangPromise = null;
+
 export const getCurrentUser = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/users/me`, {
@@ -44,4 +46,35 @@ export const updateUserProfile = async (userId, updates) => {
     console.error('Error updating user profile:', error);
     throw error;
   }
+};
+
+export const getLearningLang = async () => {
+  const cachedName = localStorage.getItem('learningLanguageName');
+  const cachedCode = localStorage.getItem('learningLangCode');
+
+  if (cachedName && cachedCode) {
+    return { languageName: cachedName, langCode: cachedCode };
+  }
+
+  if (!learningLangPromise) {
+    learningLangPromise = axios
+      .get(`${API_BASE_URL}/users/me/learning-language`, {
+        headers: getAuthHeaders()
+      })
+      .then((response) => {
+        const data = response.data?.data;
+        const languageName = data?.languageName;
+        const langCode = data?.langCode;
+
+        if (languageName) localStorage.setItem('learningLanguageName', languageName);
+        if (langCode) localStorage.setItem('learningLangCode', langCode);
+
+        return { languageName, langCode };
+      })
+      .finally(() => {
+        learningLangPromise = null;
+      });
+  }
+
+  return learningLangPromise;
 };

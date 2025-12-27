@@ -36,9 +36,23 @@ function NewUserSurvey() {
             
             console.log("Updated User:", response.data);
             localStorage.setItem("username", username);
+            localStorage.setItem("learningLanguageName", language);
             const updatedUser = response.data?.data;
             const isModerator = updatedUser?.isModerator === true;
             localStorage.setItem("isModerator", isModerator ? "true" : "false");
+
+            try {
+                const langResponse = await axios.get(`http://localhost:5050/api/users/me/learning-language`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const langData = langResponse.data?.data;
+                if (langData?.languageName) localStorage.setItem("learningLanguageName", langData.languageName);
+                if (langData?.langCode) localStorage.setItem("learningLangCode", langData.langCode);
+            } catch (e) {
+                console.error("Failed to cache learning language:", e);
+            }
             
             // Wait a tick to ensure localStorage is updated before navigation
             setTimeout(() => {

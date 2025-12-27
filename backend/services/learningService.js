@@ -31,57 +31,9 @@ import {
   buildFlashcardQuestion
 } from "../utils/learning/questionBuilder.js";
 
+import { mapUserLanguageToDictCode } from "../utils/learning/languageMapping.js";
+
 import { FLASHCARD_CAP } from "../config/learningConfig.js";
-
-// ============================================================================
-// LANGUAGE CODE MAPPING
-// ============================================================================
-
-/**
- * Map user's language field to dictionary language code
- * @param {string} userLanguage - User's language field value
- * @returns {string} - ISO language code
- */
-function mapUserLanguageToDictCode(userLanguage) {
-  if (!userLanguage) {
-    return "en"; // Default to English
-  }
-  
-  // Normalize to lowercase
-  const normalized = userLanguage.toLowerCase().trim();
-  
-  // If already an ISO code, return it
-  const validCodes = ["en", "es", "fr", "de", "it", "nl", "pt"];
-  if (validCodes.includes(normalized)) {
-    return normalized;
-  }
-  
-  // Map full language names to codes
-  const languageMap = {
-    "english": "en",
-    "spanish": "es",
-    "español": "es",
-    "french": "fr",
-    "français": "fr",
-    "german": "de",
-    "deutsch": "de",
-    "italian": "it",
-    "italiano": "it",
-    "dutch": "nl",
-    "nederlands": "nl",
-    "portuguese": "pt",
-    "português": "pt"
-  };
-  
-  const mapped = languageMap[normalized];
-  if (mapped) {
-    return mapped;
-  }
-  
-  // Fallback to English if unknown
-  console.warn(`Unknown user language: ${userLanguage}, defaulting to English`);
-  return "en";
-}
 
 // ============================================================================
 // PROFILE INITIALIZATION
